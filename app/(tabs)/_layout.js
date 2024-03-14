@@ -3,6 +3,7 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 
 // See https://icons.expo.fyi/Index for the icon names and filter for FontAwesome
+// Added this comment to test main branch protection
 
 export default function TabLayout() {
     return (
