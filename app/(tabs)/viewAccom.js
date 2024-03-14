@@ -6,14 +6,14 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 export default function viewAccom() {
     return (
         <SafeAreaView>
-            <View style={styles.header}>
+            <View>
                 <Image
                     style={styles.headerImg}
                     source={{
                         uri: 'https://images7.alphacoders.com/341/341714.jpg',
                     }}
                 />
-                <View style={styles.titleGroup}>
+                <View style={[styles.titleGroup, styles.container]}>
                     <Text style={styles.accomTitle}>New York House</Text>
                     <View style={[styles.ratingGroup, styles.center]}>
                         <FontAwesome
@@ -25,15 +25,16 @@ export default function viewAccom() {
                     </View>
                 </View>
             </View>
-            <View style={[styles.center, styles.desc]}>
+            <View style={styles.horizLine}></View>
+            <View style={[styles.center, styles.container]}>
                 <Text style={styles.descText}>
                     pellentesque dignissim enim sit amet venenatis urna cursus
                     eget nunc scelerisque viverra mauris in aliquam sem
                     fringilla ut morbi tincidunt augue interdum velit euismod in
                     pellentesque massa
                 </Text>
-                <View style={styles.roomsDesc}>
-                    <View style={styles.row}>
+                <View style={[styles.roomsDesc, styles.container]}>
+                    <View style={[styles.row]}>
                         <Text>Bed</Text>
                         <Text>Bathroom</Text>
                         <Text>Rooms</Text>
@@ -50,6 +51,9 @@ export default function viewAccom() {
 }
 
 const styles = StyleSheet.create({
+    container: {
+        marginHorizontal: 13,
+    },
     center: {
         alignContent: 'center',
         alignItems: 'center',
@@ -57,15 +61,21 @@ const styles = StyleSheet.create({
     row: {
         flexDirection: 'row',
         justifyContent: 'space-evenly',
+        gap: 10,
     },
     headerImg: {
         height: 300,
         // resizeMode: 'contain',
     },
+    horizLine: {
+        borderBottomColor: 'gray',
+        borderBottomWidth: 1.4,
+        marginHorizontal: 20,
+        marginVertical: 10,
+    },
     titleGroup: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        marginHorizontal: 13,
         paddingVertical: 12,
     },
     accomTitle: {
@@ -82,18 +92,16 @@ const styles = StyleSheet.create({
     star: {
         color: '#e8c31e',
     },
-    desc: {
-        marginHorizontal: 15,
-    },
     descText: {
         fontSize: 14,
     },
     roomsDesc: {
-        padding: 10,
+        padding: 13,
         justifyContent: 'space-evenly',
         gap: 10,
         borderColor: 'black',
-        borderRadius: 0.5,
+        borderRadius: 35,
         borderWidth: 1.5,
+        marginVertical: 15,
     },
 });
