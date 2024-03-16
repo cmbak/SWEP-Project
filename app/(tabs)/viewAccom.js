@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import {
+    StyleSheet,
+    Text,
+    View,
+    Image,
+    TouchableOpacity,
+    ScrollView,
+} from 'react-native';
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -17,38 +24,45 @@ Accommodation
 
 */
 
+/* Could add Scrollable Reviews */
+
 export default function viewAccom() {
     return (
         <SafeAreaView>
-            <View>
-                <Image
-                    style={styles.headerImg}
-                    source={{
-                        uri: 'https://images7.alphacoders.com/341/341714.jpg',
-                    }}
-                />
-                <View
-                    style={[styles.titleGroup, styles.container, styles.center]}
-                >
-                    <View>
-                        <Text style={styles.accomTitle}>London House</Text>
-                        <Text style={styles.datePosted}>
-                            Date Posted: 16.3.24
-                        </Text>
+            <ScrollView>
+                <View>
+                    <Image
+                        style={styles.headerImg}
+                        source={{
+                            uri: 'https://images7.alphacoders.com/341/341714.jpg',
+                        }}
+                    />
+                    <View
+                        style={[
+                            styles.titleGroup,
+                            styles.container,
+                            styles.center,
+                        ]}
+                    >
+                        <View>
+                            <Text style={styles.accomTitle}>London House</Text>
+                            <Text style={styles.datePosted}>
+                                Date Posted: 16.3.24
+                            </Text>
+                        </View>
+                        <Text style={styles.price}>£500pcm</Text>
                     </View>
-                    <Text style={styles.price}>£500pcm</Text>
                 </View>
-            </View>
-            <View style={[styles.horizLine, styles.container]}></View>
-            {/* Description */}
-            <View style={[styles.center, styles.container]}>
-                <Text style={styles.descText}>
-                    pellentesque dignissim enim sit amet venenatis urna cursus
-                    eget nunc scelerisque viverra mauris in aliquam sem
-                    fringilla ut morbi tincidunt augue interdum velit euismod in
-                    pellentesque massa
-                </Text>
-                {/* <View style={[styles.roomsDesc, styles.container]}>
+                <View style={[styles.horizLine, styles.container]}></View>
+                {/* Description */}
+                <View style={[styles.center, styles.container]}>
+                    <Text style={styles.descText}>
+                        pellentesque dignissim enim sit amet venenatis urna
+                        cursus eget nunc scelerisque viverra mauris in aliquam
+                        sem fringilla ut morbi tincidunt augue interdum velit
+                        euismod in pellentesque massa
+                    </Text>
+                    {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
                         <Text>Bathroom</Text>
@@ -60,58 +74,71 @@ export default function viewAccom() {
                         <Text>3</Text>
                     </View>
                 </View> */}
-            </View>
-            {/* Location */}
-            <View style={[styles.container, styles.twoRow]}>
-                <Text style={styles.rowText}>London, United Kingdom</Text>
-                <Text style={styles.rowText}>SE11 S9E</Text>
-            </View>
-            <View style={[styles.horizLine, styles.container]}></View>
+                </View>
+                {/* Location */}
+                <View style={[styles.container, styles.twoRow]}>
+                    <Text style={styles.rowText}>London, United Kingdom</Text>
+                    <Text style={styles.rowText}>SE11 S9E</Text>
+                </View>
+                <View style={[styles.horizLine, styles.container]}></View>
 
-            {/* Rating */}
-            <View style={[styles.container, styles.twoRow]}>
-                <Text style={styles.rowText}>Rating</Text>
-                <View style={[styles.ratingGroup, styles.center]}>
-                    <FontAwesome size={18} name="star" style={styles.star} />
-                    <Text style={[styles.rating, styles.rowText]}>6.7/10</Text>
+                {/* Rating */}
+                <View style={[styles.container, styles.twoRow]}>
+                    <Text style={styles.rowText}>Rating</Text>
+                    <View style={[styles.ratingGroup, styles.center]}>
+                        <FontAwesome
+                            size={18}
+                            name="star"
+                            style={styles.star}
+                        />
+                        <Text style={[styles.rating, styles.rowText]}>
+                            6.7/10
+                        </Text>
+                    </View>
                 </View>
-            </View>
-            <View style={[styles.horizLine, styles.container]}></View>
+                <View style={[styles.horizLine, styles.container]}></View>
 
-            {/* Accessibility */}
-            <View style={[styles.container, styles.twoRow]}>
-                <Text style={styles.rowText}>Accessibility</Text>
-                <Text style={styles.rowText}>Something Something</Text>
-            </View>
-            <View style={[styles.horizLine, styles.container]}></View>
+                {/* Accessibility */}
+                <View style={[styles.container, styles.twoRow]}>
+                    <Text style={styles.rowText}>Accessibility</Text>
+                    <Text style={styles.rowText}>Something Something</Text>
+                </View>
+                <View style={[styles.horizLine, styles.container]}></View>
 
-            {/* Facilities */}
-            <View style={[styles.container, styles.twoRow]}>
-                <Text style={styles.rowText}>Facilities</Text>
-                <View style={styles.facilityList}>
-                    <Text style={[styles.rowText, styles.facilityText]}>
-                        Bathroom
-                    </Text>
-                    <Text style={[styles.rowText, styles.facilityText]}>
-                        Carbon Monoxide Alarm
-                    </Text>
-                    <Text style={[styles.rowText, styles.facilityText]}>
-                        Bathroom
-                    </Text>
+                {/* Facilities */}
+                <View style={[styles.container, styles.twoRow]}>
+                    <Text style={styles.rowText}>Facilities</Text>
+                    <View style={styles.facilityList}>
+                        <Text style={[styles.rowText, styles.facilityText]}>
+                            Bathroom
+                        </Text>
+                        <Text style={[styles.rowText, styles.facilityText]}>
+                            Carbon Monoxide Alarm
+                        </Text>
+                        <Text style={[styles.rowText, styles.facilityText]}>
+                            Bathroom
+                        </Text>
+                    </View>
                 </View>
-            </View>
-            {/* User Profile */}
-            <View style={[styles.container, styles.profileCard, styles.center]}>
-                <View style={styles.profilePic}>
-                    <FontAwesome size={80} name="user" color="gray" />
+                {/* User Profile */}
+                <View
+                    style={[
+                        styles.container,
+                        styles.profileCard,
+                        styles.center,
+                    ]}
+                >
+                    <View style={styles.profilePic}>
+                        <FontAwesome size={80} name="user" color="gray" />
+                    </View>
+                    <View style={styles.profileContainer}>
+                        <Text style={styles.profileName}>John Smith</Text>
+                        <TouchableOpacity style={styles.msgBtn}>
+                            <Text style={styles.msgTxt}>Message</Text>
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View style={styles.profileContainer}>
-                    <Text style={styles.profileName}>John Smith</Text>
-                    <TouchableOpacity style={styles.msgBtn}>
-                        <Text style={styles.msgTxt}>Message</Text>
-                    </TouchableOpacity>
-                </View>
-            </View>
+            </ScrollView>
         </SafeAreaView>
     );
 }
@@ -196,7 +223,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 15,
         paddingVertical: 30,
-        marginTop: 13,
+        marginVertical: 13,
     },
     profilePic: {
         flex: 1,
