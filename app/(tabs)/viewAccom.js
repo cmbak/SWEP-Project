@@ -1,4 +1,4 @@
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -32,14 +32,7 @@ export default function viewAccom() {
                 >
                     <Text style={styles.accomTitle}>London House</Text>
                     <Text style={styles.price}>£500pcm</Text>
-                    {/* <View style={[styles.ratingGroup, styles.center]}>
-                        <FontAwesome
-                            size={28}
-                            name="star"
-                            style={styles.star}
-                        />
-                        <Text style={styles.rating}>6.7/10</Text>
-                    </View> */}
+                    {/*  */}
                 </View>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
@@ -74,7 +67,10 @@ export default function viewAccom() {
             {/* Rating */}
             <View style={[styles.container, styles.twoRow]}>
                 <Text>Rating</Text>
-                <Text></Text>
+                <View style={[styles.ratingGroup, styles.center]}>
+                    <FontAwesome size={18} name="star" style={styles.star} />
+                    <Text style={styles.rating}>6.7/10</Text>
+                </View>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
 
@@ -86,7 +82,19 @@ export default function viewAccom() {
             <View style={[styles.horizLine, styles.container]}></View>
 
             {/* Facilities */}
+            <View style={[styles.container, styles.twoRow]}>
+                <Text>Facilities</Text>
+            </View>
             {/* User Profile */}
+            <View style={[styles.container, styles.profileCard]}>
+                <FontAwesome size={28} name="user" color="gray" />
+                <View>
+                    <Text>First-name Last-name</Text>
+                    <TouchableOpacity style={styles.msgBtn}>
+                        <Text>Message</Text>
+                    </TouchableOpacity>
+                </View>
+            </View>
         </SafeAreaView>
     );
 }
@@ -141,6 +149,7 @@ const styles = StyleSheet.create({
     },
     descText: {
         fontSize: 14.5,
+        marginBottom: 13,
     },
     roomsDesc: {
         padding: 13,
