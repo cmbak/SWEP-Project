@@ -30,7 +30,12 @@ export default function viewAccom() {
                 <View
                     style={[styles.titleGroup, styles.container, styles.center]}
                 >
-                    <Text style={styles.accomTitle}>London House</Text>
+                    <View>
+                        <Text style={styles.accomTitle}>London House</Text>
+                        <Text style={styles.datePosted}>
+                            Date Posted: 16.3.24
+                        </Text>
+                    </View>
                     <Text style={styles.price}>£500pcm</Text>
                 </View>
             </View>
@@ -143,7 +148,10 @@ const styles = StyleSheet.create({
     titleGroup: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        paddingVertical: 12,
+        paddingTop: 25,
+    },
+    datePosted: {
+        color: '#494949',
     },
     price: {
         fontSize: 18,
