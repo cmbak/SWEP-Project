@@ -86,12 +86,14 @@ export default function viewAccom() {
                 <Text>Facilities</Text>
             </View>
             {/* User Profile */}
-            <View style={[styles.container, styles.profileCard]}>
-                <FontAwesome size={28} name="user" color="gray" />
-                <View>
-                    <Text>First-name Last-name</Text>
+            <View style={[styles.container, styles.profileCard, styles.center]}>
+                <View style={styles.profilePic}>
+                    <FontAwesome size={80} name="user" color="gray" />
+                </View>
+                <View style={styles.profileContainer}>
+                    <Text style={styles.profileName}>John Smith</Text>
                     <TouchableOpacity style={styles.msgBtn}>
-                        <Text>Message</Text>
+                        <Text style={styles.msgTxt}>Message</Text>
                     </TouchableOpacity>
                 </View>
             </View>
@@ -159,5 +161,35 @@ const styles = StyleSheet.create({
         borderRadius: 35,
         borderWidth: 1.5,
         marginVertical: 15,
+    },
+    profileCard: {
+        borderColor: 'darkgray',
+        borderWidth: 1,
+        backgroundColor: '#e8e9ea',
+        flexDirection: 'row',
+        paddingHorizontal: 15,
+        paddingVertical: 30,
+    },
+    profilePic: {
+        flex: 1,
+        alignItems: 'center',
+        alignSelf: 'center',
+    },
+    profileContainer: {
+        gap: 2,
+        flex: 1,
+    },
+    profileName: {
+        marginBottom: 10,
+        fontSize: 19,
+        textAlign: 'center',
+    },
+    msgBtn: {
+        backgroundColor: '#197bc6',
+        padding: 7,
+    },
+    msgTxt: {
+        color: 'white',
+        textAlign: 'center',
     },
 });
