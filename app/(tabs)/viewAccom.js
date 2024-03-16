@@ -82,22 +82,6 @@ export default function viewAccom() {
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
 
-                {/* Rating */}
-                <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>Rating</Text>
-                    <View style={[styles.ratingGroup, styles.center]}>
-                        <FontAwesome
-                            size={18}
-                            name="star"
-                            style={styles.star}
-                        />
-                        <Text style={[styles.rating, styles.rowText]}>
-                            6.7/10
-                        </Text>
-                    </View>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-
                 {/* Accessibility */}
                 <View style={[styles.container, styles.twoRow]}>
                     <Text style={styles.rowText}>Accessibility</Text>
@@ -120,6 +104,36 @@ export default function viewAccom() {
                         </Text>
                     </View>
                 </View>
+                <View style={[styles.horizLine, styles.container]}></View>
+                {/* Rating */}
+                <View style={[styles.container, styles.twoRow]}>
+                    <Text style={styles.rowText}>Rating</Text>
+                    <View style={[styles.ratingGroup, styles.center]}>
+                        <FontAwesome
+                            size={18}
+                            name="star"
+                            style={styles.star}
+                        />
+                        <Text style={[styles.rating, styles.rowText]}>
+                            7.6/10
+                        </Text>
+                    </View>
+                </View>
+                <View style={[styles.container]}>
+                    <View style={styles.twoRow}>
+                        <Text>Wifi</Text>
+                        <Text>8.2</Text>
+                    </View>
+                    <View style={styles.twoRow}>
+                        <Text>Location</Text>
+                        <Text>7.3</Text>
+                    </View>
+                    <View style={styles.twoRow}>
+                        <Text>Cleanliness</Text>
+                        <Text>7.3</Text>
+                    </View>
+                </View>
+                <View style={[styles.horizLine, styles.container]}></View>
                 {/* User Profile */}
                 <View
                     style={[
@@ -132,6 +146,7 @@ export default function viewAccom() {
                         <FontAwesome size={80} name="user" color="gray" />
                     </View>
                     <View style={styles.profileContainer}>
+                        <Text style={styles.postBy}>Posted By</Text>
                         <Text style={styles.profileName}>John Smith</Text>
                         <TouchableOpacity style={styles.msgBtn}>
                             <Text style={styles.msgTxt}>Message</Text>
@@ -190,6 +205,7 @@ const styles = StyleSheet.create({
     ratingGroup: {
         flexDirection: 'row',
         gap: 10,
+        marginBottom: 7,
     },
     // rating: {
     //     fontSize: 16,
@@ -233,6 +249,10 @@ const styles = StyleSheet.create({
     profileContainer: {
         gap: 2,
         flex: 1,
+    },
+    postBy: {
+        color: '#494949',
+        textAlign: 'center',
     },
     profileName: {
         marginBottom: 10,
