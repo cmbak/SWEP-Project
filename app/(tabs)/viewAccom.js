@@ -32,7 +32,6 @@ export default function viewAccom() {
                 >
                     <Text style={styles.accomTitle}>London House</Text>
                     <Text style={styles.price}>£500pcm</Text>
-                    {/*  */}
                 </View>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
@@ -59,31 +58,42 @@ export default function viewAccom() {
             </View>
             {/* Location */}
             <View style={[styles.container, styles.twoRow]}>
-                <Text>London, United Kingdom</Text>
-                <Text>SE11 S9E</Text>
+                <Text style={styles.rowText}>London, United Kingdom</Text>
+                <Text style={styles.rowText}>SE11 S9E</Text>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
 
             {/* Rating */}
             <View style={[styles.container, styles.twoRow]}>
-                <Text>Rating</Text>
+                <Text style={styles.rowText}>Rating</Text>
                 <View style={[styles.ratingGroup, styles.center]}>
                     <FontAwesome size={18} name="star" style={styles.star} />
-                    <Text style={styles.rating}>6.7/10</Text>
+                    <Text style={[styles.rating, styles.rowText]}>6.7/10</Text>
                 </View>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
 
             {/* Accessibility */}
             <View style={[styles.container, styles.twoRow]}>
-                <Text>Accessibility</Text>
-                <Text>Something Something</Text>
+                <Text style={styles.rowText}>Accessibility</Text>
+                <Text style={styles.rowText}>Something Something</Text>
             </View>
             <View style={[styles.horizLine, styles.container]}></View>
 
             {/* Facilities */}
             <View style={[styles.container, styles.twoRow]}>
-                <Text>Facilities</Text>
+                <Text style={styles.rowText}>Facilities</Text>
+                <View style={styles.facilityList}>
+                    <Text style={[styles.rowText, styles.facilityText]}>
+                        Bathroom
+                    </Text>
+                    <Text style={[styles.rowText, styles.facilityText]}>
+                        Carbon Monoxide Alarm
+                    </Text>
+                    <Text style={[styles.rowText, styles.facilityText]}>
+                        Bathroom
+                    </Text>
+                </View>
             </View>
             {/* User Profile */}
             <View style={[styles.container, styles.profileCard, styles.center]}>
@@ -118,12 +128,15 @@ const styles = StyleSheet.create({
         justifyContent: 'space-evenly',
         gap: 10,
     },
+    rowText: {
+        fontSize: 14.5,
+    },
     headerImg: {
         height: 300,
         // resizeMode: 'contain',
     },
     horizLine: {
-        borderBottomColor: 'gray',
+        borderBottomColor: '#c7cacc',
         borderBottomWidth: 1.4,
         marginVertical: 10,
     },
@@ -143,9 +156,9 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         gap: 10,
     },
-    rating: {
-        fontSize: 16,
-    },
+    // rating: {
+    //     fontSize: 16,
+    // },
     star: {
         color: '#e8c31e',
     },
@@ -162,6 +175,12 @@ const styles = StyleSheet.create({
         borderWidth: 1.5,
         marginVertical: 15,
     },
+    facilityList: {
+        color: 'blue',
+    },
+    facilityText: {
+        textAlign: 'right',
+    },
     profileCard: {
         borderColor: 'darkgray',
         borderWidth: 1,
@@ -169,6 +188,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         paddingHorizontal: 15,
         paddingVertical: 30,
+        marginTop: 13,
     },
     profilePic: {
         flex: 1,
