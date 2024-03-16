@@ -3,6 +3,20 @@ import React from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+/*
+Accommodation
+
+- Number of rooms
+- Price
+- Location
+- Accessibillity
+- Facilities
+- Address
+- Postcode
+
+
+*/
+
 export default function viewAccom() {
     return (
         <SafeAreaView>
@@ -13,19 +27,23 @@ export default function viewAccom() {
                         uri: 'https://images7.alphacoders.com/341/341714.jpg',
                     }}
                 />
-                <View style={[styles.titleGroup, styles.container]}>
-                    <Text style={styles.accomTitle}>New York House</Text>
-                    <View style={[styles.ratingGroup, styles.center]}>
+                <View
+                    style={[styles.titleGroup, styles.container, styles.center]}
+                >
+                    <Text style={styles.accomTitle}>London House</Text>
+                    <Text style={styles.price}>£500pcm</Text>
+                    {/* <View style={[styles.ratingGroup, styles.center]}>
                         <FontAwesome
                             size={28}
                             name="star"
                             style={styles.star}
                         />
                         <Text style={styles.rating}>6.7/10</Text>
-                    </View>
+                    </View> */}
                 </View>
             </View>
-            <View style={styles.horizLine}></View>
+            <View style={[styles.horizLine, styles.container]}></View>
+            {/* Description */}
             <View style={[styles.center, styles.container]}>
                 <Text style={styles.descText}>
                     pellentesque dignissim enim sit amet venenatis urna cursus
@@ -33,7 +51,7 @@ export default function viewAccom() {
                     fringilla ut morbi tincidunt augue interdum velit euismod in
                     pellentesque massa
                 </Text>
-                <View style={[styles.roomsDesc, styles.container]}>
+                {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
                         <Text>Bathroom</Text>
@@ -44,15 +62,42 @@ export default function viewAccom() {
                         <Text>1</Text>
                         <Text>3</Text>
                     </View>
-                </View>
+                </View> */}
             </View>
+            {/* Location */}
+            <View style={[styles.container, styles.twoRow]}>
+                <Text>London, United Kingdom</Text>
+                <Text>SE11 S9E</Text>
+            </View>
+            <View style={[styles.horizLine, styles.container]}></View>
+
+            {/* Rating */}
+            <View style={[styles.container, styles.twoRow]}>
+                <Text>Rating</Text>
+                <Text></Text>
+            </View>
+            <View style={[styles.horizLine, styles.container]}></View>
+
+            {/* Accessibility */}
+            <View style={[styles.container, styles.twoRow]}>
+                <Text>Accessibility</Text>
+                <Text>Something Something</Text>
+            </View>
+            <View style={[styles.horizLine, styles.container]}></View>
+
+            {/* Facilities */}
+            {/* User Profile */}
         </SafeAreaView>
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        marginHorizontal: 13,
+        marginHorizontal: 20,
+    },
+    twoRow: {
+        justifyContent: 'space-between',
+        flexDirection: 'row',
     },
     center: {
         alignContent: 'center',
@@ -70,7 +115,6 @@ const styles = StyleSheet.create({
     horizLine: {
         borderBottomColor: 'gray',
         borderBottomWidth: 1.4,
-        marginHorizontal: 20,
         marginVertical: 10,
     },
     titleGroup: {
@@ -78,9 +122,12 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         paddingVertical: 12,
     },
+    price: {
+        fontSize: 18,
+    },
     accomTitle: {
         fontSize: 27,
-        fontWeight: 'bold',
+        // fontWeight: 'bold',
     },
     ratingGroup: {
         flexDirection: 'row',
@@ -93,7 +140,7 @@ const styles = StyleSheet.create({
         color: '#e8c31e',
     },
     descText: {
-        fontSize: 14,
+        fontSize: 14.5,
     },
     roomsDesc: {
         padding: 13,
