@@ -125,6 +125,15 @@ export default function viewAccom() {
     //     fetchData();
     // }, []);
 
+    const formatDate = (date) => {
+        let formattedDate = new Date(date);
+        console.log(formattedDate);
+        let year = formattedDate.getFullYear();
+        let month = formattedDate.getMonth() + 1;
+        let day = formattedDate.getDate();
+        return `${day}.${month}.${year}`;
+    };
+
     return (
         <SafeAreaView>
             <ScrollView>
@@ -132,7 +141,7 @@ export default function viewAccom() {
                     <Image
                         style={styles.headerImg}
                         source={{
-                            uri: 'https://images7.alphacoders.com/341/341714.jpg',
+                            uri: `${accomData.images[0]}`,
                         }}
                     />
                     <View
@@ -143,23 +152,25 @@ export default function viewAccom() {
                         ]}
                     >
                         <View>
-                            <Text style={styles.accomTitle}>London House</Text>
+                            <Text style={styles.accomTitle}>
+                                {accomData.name}
+                            </Text>
                             <Text style={styles.datePosted}>
-                                Date Posted: 16.3.24
+                                {`Available from ${formatDate(
+                                    accomData.availableFrom
+                                )}`}
                             </Text>
                         </View>
-                        <Text style={styles.price}>£500pcm</Text>
+                        <Text
+                            style={styles.price}
+                        >{`£${accomData.price}pcm`}</Text>
                     </View>
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Description */}
                 <View style={[styles.center, styles.container]}>
-                    <Text style={styles.descText}>
-                        pellentesque dignissim enim sit amet venenatis urna
-                        cursus eget nunc scelerisque viverra mauris in aliquam
-                        sem fringilla ut morbi tincidunt augue interdum velit
-                        euismod in pellentesque massa
-                    </Text>
+                    <Text style={styles.descText}>{accomData.description}</Text>
+                    {/* // TODO FORMAT HTML in string */}
                     {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
@@ -175,8 +186,8 @@ export default function viewAccom() {
                 </View>
                 {/* Location */}
                 <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>London, United Kingdom</Text>
-                    <Text style={styles.rowText}>SE11 S9E</Text>
+                    <Text style={styles.rowText}>{accomData.address}</Text>
+                    <Text style={styles.rowText}>{accomData.postalCode}</Text>
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
 
@@ -190,17 +201,16 @@ export default function viewAccom() {
                 {/* Facilities */}
                 <View style={[styles.container, styles.twoRow]}>
                     <Text style={styles.rowText}>Facilities</Text>
-                    <View style={styles.facilityList}>
-                        <Text style={[styles.rowText, styles.facilityText]}>
-                            Bathroom
-                        </Text>
-                        <Text style={[styles.rowText, styles.facilityText]}>
-                            Carbon Monoxide Alarm
-                        </Text>
-                        <Text style={[styles.rowText, styles.facilityText]}>
-                            Bathroom
-                        </Text>
-                    </View>
+                    {/* TODO - change to flat list? 
+                    TODO - Is key needed?
+                    */}
+                    {/* <View style={styles.facilityList}>
+                        {accomData.features.map((feature) => {
+                            <Text style={[styles.rowText, styles.facilityText]}>
+                                {feature}
+                            </Text>;
+                        })}
+                    </View> */}
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Rating */}
@@ -245,7 +255,9 @@ export default function viewAccom() {
                     </View>
                     <View style={styles.profileContainer}>
                         <Text style={styles.postBy}>Posted By</Text>
-                        <Text style={styles.profileName}>John Smith</Text>
+                        <Text style={styles.profileName}>
+                            {accomData.agentName}
+                        </Text>
                         <TouchableOpacity style={styles.msgBtn}>
                             <Text style={styles.msgTxt}>Message</Text>
                         </TouchableOpacity>
