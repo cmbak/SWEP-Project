@@ -80,6 +80,27 @@ const exampleResult = {
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
 
+const to1Dp = (num) => {
+    let stringFloat = num.toFixed(1);
+    return parseFloat(stringFloat);
+};
+
+// Returns a random number from 0 to 10
+const getRandomScore = () => {
+    const score = Math.floor(Math.random() * 110) / 10;
+    return to1Dp(score);
+};
+
+const getAvgScore = (r1, r2, r3) => {
+    let avg = (r1 + r2 + r3) / 3;
+    return to1Dp(avg);
+};
+
+const r1 = getRandomScore();
+const r2 = getRandomScore();
+const r3 = getRandomScore();
+const avgScore = getAvgScore(r1, r2, r3);
+
 export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
 
@@ -103,7 +124,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
     };
 
     // useEffect(() => {
-    //     fetchData();
+    // fetchData();
     // }, []);
 
     // Returns date as dd.mm.yy
@@ -215,22 +236,22 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             style={styles.star}
                         />
                         <Text style={[styles.rating, styles.rowText]}>
-                            7.6/10
+                            {`${avgScore} / 10`}
                         </Text>
                     </View>
                 </View>
                 <View style={[styles.container]}>
                     <View style={styles.twoRow}>
                         <Text>Wifi</Text>
-                        <Text>8.2</Text>
+                        <Text>{r1}</Text>
                     </View>
                     <View style={styles.twoRow}>
                         <Text>Location</Text>
-                        <Text>7.3</Text>
+                        <Text>{r2}</Text>
                     </View>
                     <View style={styles.twoRow}>
                         <Text>Cleanliness</Text>
-                        <Text>7.3</Text>
+                        <Text>{r3}</Text>
                     </View>
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
