@@ -10,6 +10,7 @@ import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
+import { key, host } from '../../apiKey';
 
 /*
 Accommodation
@@ -80,6 +81,8 @@ const exampleResult = {
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
 
+// For random review ratings
+
 const to1Dp = (num) => {
     let stringFloat = num.toFixed(1);
     return parseFloat(stringFloat);
@@ -102,29 +105,30 @@ const r3 = getRandomScore();
 const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
-    const [accomData, setAccomData] = useState(exampleResult);
+    const [accomData, setAccomData] = useState(null);
 
     const fetchData = async () => {
         const options = {
             method: 'GET',
             url: `https://zoopla4.p.rapidapi.com/properties/${propertyId}`,
             headers: {
-                'X-RapidAPI-Key':
-                    'aebd7323cdmsh1a7c056bf60f7a5p1383d2jsn8752fc7ce027',
-                'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
+                'X-RapidAPI-Key': key,
+                'X-RapidAPI-Host': host,
             },
         };
 
         try {
             const response = await axios.request(options);
+            setAccomData(response.data.data);
             console.log(response.data.data);
         } catch (error) {
             console.error(error);
         }
     };
 
+    // UNCOMMENT WHEN NEEDED
     // useEffect(() => {
-    // fetchData();
+    //     fetchData();
     // }, []);
 
     // Returns date as dd.mm.yy
@@ -146,43 +150,44 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
     return (
         <SafeAreaView>
-            <ScrollView>
-                <View>
-                    <Image
-                        style={styles.headerImg}
-                        source={{
-                            uri: `${accomData.images[0]}`,
-                        }}
-                    />
-                    <View
-                        style={[
-                            styles.titleGroup,
-                            styles.container,
-                            styles.center,
-                        ]}
-                    >
-                        <View>
-                            <Text style={styles.accomTitle}>
-                                {accomData.name}
-                            </Text>
-                            <Text style={styles.datePosted}>
-                                {`Available from ${formatDate(
-                                    accomData.availableFrom
-                                )}`}
-                            </Text>
+            {accomData ? (
+                <ScrollView>
+                    <View>
+                        <Image
+                            style={styles.headerImg}
+                            source={{
+                                uri: `${accomData.images[0]}`,
+                            }}
+                        />
+                        <View
+                            style={[
+                                styles.titleGroup,
+                                styles.container,
+                                styles.center,
+                            ]}
+                        >
+                            <View>
+                                <Text style={styles.accomTitle}>
+                                    {accomData.name}
+                                </Text>
+                                <Text style={styles.datePosted}>
+                                    {`Available from ${formatDate(
+                                        accomData.availableFrom
+                                    )}`}
+                                </Text>
+                            </View>
+                            <Text
+                                style={styles.price}
+                            >{`£${accomData.price}pcm`}</Text>
                         </View>
-                        <Text
-                            style={styles.price}
-                        >{`£${accomData.price}pcm`}</Text>
                     </View>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-                {/* Description - API returns a html formatted string */}
-                <View style={[styles.center, styles.container]}>
-                    <Text style={styles.descText}>
-                        {formatText(accomData.description)}
-                    </Text>
-                    {/* <View style={[styles.roomsDesc, styles.container]}>
+                    <View style={[styles.horizLine, styles.container]}></View>
+                    {/* Description - API returns a html formatted string */}
+                    <View style={[styles.center, styles.container]}>
+                        <Text style={styles.descText}>
+                            {formatText(accomData.description)}
+                        </Text>
+                        {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
                         <Text>Bathroom</Text>
@@ -194,92 +199,102 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         <Text>3</Text>
                     </View>
                 </View> */}
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-
-                {/* Location */}
-                <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>{accomData.address}</Text>
-                    <Text style={styles.rowText}>{accomData.postalCode}</Text>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-
-                {/* Accessibility */}
-                <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>Accessibility</Text>
-                    <Text style={styles.rowText}>Something Something</Text>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-
-                {/* Facilities */}
-                <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>Facilities</Text>
-
-                    <View style={styles.facilityList}>
-                        {accomData.features.map((feature, index) => {
-                            return (
-                                <Text key={index} style={styles.facilityText}>
-                                    {formatText(feature)}
-                                </Text>
-                            );
-                        })}
                     </View>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-                {/* Rating */}
-                <View style={[styles.container, styles.twoRow]}>
-                    <Text style={styles.rowText}>Rating</Text>
-                    <View style={[styles.ratingGroup, styles.center]}>
-                        <FontAwesome
-                            size={18}
-                            name="star"
-                            style={styles.star}
-                        />
-                        <Text style={[styles.rating, styles.rowText]}>
-                            {`${avgScore} / 10`}
+                    <View style={[styles.horizLine, styles.container]}></View>
+
+                    {/* Location */}
+                    <View style={[styles.container, styles.twoRow]}>
+                        <Text style={styles.rowText}>{accomData.address}</Text>
+                        <Text style={styles.rowText}>
+                            {accomData.postalCode}
                         </Text>
                     </View>
+                    <View style={[styles.horizLine, styles.container]}></View>
+
+                    {/* Accessibility */}
+                    <View style={[styles.container, styles.twoRow]}>
+                        <Text style={styles.rowText}>Accessibility</Text>
+                        <Text style={styles.rowText}>Something Something</Text>
+                    </View>
+                    <View style={[styles.horizLine, styles.container]}></View>
+
+                    {/* Facilities */}
+                    <View style={[styles.container, styles.twoRow]}>
+                        <Text style={styles.rowText}>Facilities</Text>
+
+                        <View style={styles.facilityList}>
+                            {accomData.features.map((feature, index) => {
+                                return (
+                                    <Text
+                                        key={index}
+                                        style={styles.facilityText}
+                                    >
+                                        {formatText(feature)}
+                                    </Text>
+                                );
+                            })}
+                        </View>
+                    </View>
+                    <View style={[styles.horizLine, styles.container]}></View>
+                    {/* Rating */}
+                    <View style={[styles.container, styles.twoRow]}>
+                        <Text style={styles.rowText}>Rating</Text>
+                        <View style={[styles.ratingGroup, styles.center]}>
+                            <FontAwesome
+                                size={18}
+                                name="star"
+                                style={styles.star}
+                            />
+                            <Text style={[styles.rating, styles.rowText]}>
+                                {`${avgScore} / 10`}
+                            </Text>
+                        </View>
+                    </View>
+                    <View style={[styles.container]}>
+                        <View style={styles.twoRow}>
+                            <Text>Wifi</Text>
+                            <Text>{r1}</Text>
+                        </View>
+                        <View style={styles.twoRow}>
+                            <Text>Location</Text>
+                            <Text>{r2}</Text>
+                        </View>
+                        <View style={styles.twoRow}>
+                            <Text>Cleanliness</Text>
+                            <Text>{r3}</Text>
+                        </View>
+                    </View>
+                    <View style={[styles.horizLine, styles.container]}></View>
+                    {/* User Profile */}
+                    <View
+                        style={[
+                            styles.container,
+                            styles.profileCard,
+                            styles.center,
+                        ]}
+                    >
+                        <View style={styles.profilePic}>
+                            <FontAwesome size={80} name="user" color="gray" />
+                        </View>
+                        <View style={styles.profileContainer}>
+                            <Text style={styles.postBy}>Posted By</Text>
+                            <Text style={styles.profileName}>
+                                {accomData.agentName}
+                            </Text>
+                            <Text style={styles.phoneNumber}>
+                                {accomData.agentPhone}
+                            </Text>
+                            <TouchableOpacity style={styles.msgBtn}>
+                                <Text style={styles.msgTxt}>Message</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                </ScrollView>
+            ) : (
+                <View>
+                    <Text>Loading...</Text>
                 </View>
-                <View style={[styles.container]}>
-                    <View style={styles.twoRow}>
-                        <Text>Wifi</Text>
-                        <Text>{r1}</Text>
-                    </View>
-                    <View style={styles.twoRow}>
-                        <Text>Location</Text>
-                        <Text>{r2}</Text>
-                    </View>
-                    <View style={styles.twoRow}>
-                        <Text>Cleanliness</Text>
-                        <Text>{r3}</Text>
-                    </View>
-                </View>
-                <View style={[styles.horizLine, styles.container]}></View>
-                {/* User Profile */}
-                <View
-                    style={[
-                        styles.container,
-                        styles.profileCard,
-                        styles.center,
-                    ]}
-                >
-                    <View style={styles.profilePic}>
-                        <FontAwesome size={80} name="user" color="gray" />
-                    </View>
-                    <View style={styles.profileContainer}>
-                        <Text style={styles.postBy}>Posted By</Text>
-                        <Text style={styles.profileName}>
-                            {accomData.agentName}
-                        </Text>
-                        <Text style={styles.phoneNumber}>
-                            {accomData.agentPhone}
-                        </Text>
-                        <TouchableOpacity style={styles.msgBtn}>
-                            <Text style={styles.msgTxt}>Message</Text>
-                        </TouchableOpacity>
-                    </View>
-                </View>
-            </ScrollView>
+            )}
         </SafeAreaView>
     );
 }
