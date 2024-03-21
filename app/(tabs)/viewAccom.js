@@ -5,11 +5,13 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
+import { WebView } from 'react-native-webview';
 
 /*
 Accommodation
@@ -79,6 +81,9 @@ const exampleResult = {
     url: 'https://www.zoopla.co.uk/to-rent/details/51836428/',
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
+
+const deviceWidth = Dimensions.get('window').width;
+const deviceHeight = Dimensions.get('window');
 
 export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
@@ -158,11 +163,19 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
-                {/* Description */}
+                {/* Description - API returns a html formatted string */}
+                <WebView
+                    style={[
+                        {
+                            width: Dimensions.get('window').width,
+                            height: Dimensions.get('window').height,
+                        },
+                        styles.webview,
+                    ]}
+                    originWhitelist={['*']}
+                    source={{ html: accomData.description }}
+                />
                 <View style={[styles.center, styles.container]}>
-                    <Text style={styles.descText}>
-                        {formatDescription(accomData.description)}
-                    </Text>
                     {/* // TODO FORMAT HTML in string */}
                     {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
@@ -265,6 +278,11 @@ export default function viewAccom({ propertyId = 51836428 }) {
 }
 
 const styles = StyleSheet.create({
+    // Webview doesn't render if it's nested in a view, so you have to specify the width
+    webview: {
+        fontSize: 2,
+        backgroundColor: 'red',
+    },
     container: {
         marginHorizontal: 20,
     },
