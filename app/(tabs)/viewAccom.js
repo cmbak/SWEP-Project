@@ -80,29 +80,10 @@ const exampleResult = {
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
 
-export default function viewAccom() {
+export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
 
     const fetchData = async () => {
-        // const options = {
-        //     method: 'GET',
-        //     url: 'https://zoopla4.p.rapidapi.com/properties/rent',
-        //     params: {
-        //         locationKey: 'london',
-        //         maxPrice: '1000',
-        //         sort: 'recent',
-        //         maxBeds: '4',
-        //         page: '2',
-        //         minPrice: '100',
-        //     },
-        //     headers: {
-        //         'X-RapidAPI-Key':
-        //             'aebd7323cdmsh1a7c056bf60f7a5p1383d2jsn8752fc7ce027',
-        //         'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
-        //     },
-        // };
-
-        const propertyId = 51836428;
         const options = {
             method: 'GET',
             url: `https://zoopla4.p.rapidapi.com/properties/${propertyId}`,
@@ -125,13 +106,23 @@ export default function viewAccom() {
     //     fetchData();
     // }, []);
 
+    // Returns date as dd.mm.yy
     const formatDate = (date) => {
         let formattedDate = new Date(date);
-        console.log(formattedDate);
         let year = formattedDate.getFullYear();
         let month = formattedDate.getMonth() + 1;
         let day = formattedDate.getDate();
         return `${day}.${month}.${year}`;
+    };
+
+    // Used to format listing description which might have html tags in it
+    const formatDescription = (text) => {
+        console.log(text);
+        // let formattedText = text.replace('<br>', '\n');
+        let formattedText = text.replace(/<\/?[^>]+(>|$)/g, '');
+        // formattedText.replace('<br><br>', '\n\n');
+        console.log(formattedText);
+        return formattedText;
     };
 
     return (
@@ -169,7 +160,9 @@ export default function viewAccom() {
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Description */}
                 <View style={[styles.center, styles.container]}>
-                    <Text style={styles.descText}>{accomData.description}</Text>
+                    <Text style={styles.descText}>
+                        {formatDescription(accomData.description)}
+                    </Text>
                     {/* // TODO FORMAT HTML in string */}
                     {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
@@ -257,6 +250,9 @@ export default function viewAccom() {
                         <Text style={styles.postBy}>Posted By</Text>
                         <Text style={styles.profileName}>
                             {accomData.agentName}
+                        </Text>
+                        <Text style={styles.phoneNumber}>
+                            {accomData.agentPhone}
                         </Text>
                         <TouchableOpacity style={styles.msgBtn}>
                             <Text style={styles.msgTxt}>Message</Text>
@@ -375,6 +371,9 @@ const styles = StyleSheet.create({
     },
     msgTxt: {
         color: 'white',
+        textAlign: 'center',
+    },
+    phoneNumber: {
         textAlign: 'center',
     },
 });
