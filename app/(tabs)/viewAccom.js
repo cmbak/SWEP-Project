@@ -5,13 +5,11 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
-    Dimensions,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
-import { WebView } from 'react-native-webview';
 
 /*
 Accommodation
@@ -118,7 +116,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
     };
 
     // Used to format listing description which might have html tags in it
-    const formatDescription = (text) => {
+    const formatText = (text) => {
         let formattedText = text.replaceAll('<br>', '\n');
         formattedText = formattedText.replace(/<\/?[^>]+(>|$)/g, ''); // Gets rid of html tags
         formattedText = formattedText.replaceAll('&amp;', '&');
@@ -159,23 +157,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Description - API returns a html formatted string */}
-                {/* <WebView
-                    style={[
-                        {
-                            width: Dimensions.get('window').width,
-                            height: Dimensions.get('window').height,
-                        },
-                        styles.webview,
-                        styles.container,
-                    ]}
-                    originWhitelist={['*']}
-                    source={{ html: accomData.description }}
-                    injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=0.5, maximum-scale=0.5, user-scalable=2.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
-                    scrollEnabled={false}
-                /> */}
                 <View style={[styles.center, styles.container]}>
                     <Text style={styles.descText}>
-                        {formatDescription(accomData.description)}
+                        {formatText(accomData.description)}
                     </Text>
                     {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
@@ -209,16 +193,16 @@ export default function viewAccom({ propertyId = 51836428 }) {
                 {/* Facilities */}
                 <View style={[styles.container, styles.twoRow]}>
                     <Text style={styles.rowText}>Facilities</Text>
-                    {/* TODO - change to flat list? 
-                    TODO - Is key needed?
-                    */}
-                    {/* <View style={styles.facilityList}>
-                        {accomData.features.map((feature) => {
-                            <Text style={[styles.rowText, styles.facilityText]}>
-                                {feature}
-                            </Text>;
+
+                    <View style={styles.facilityList}>
+                        {accomData.features.map((feature, index) => {
+                            return (
+                                <Text key={index} style={styles.facilityText}>
+                                    {formatText(feature)}
+                                </Text>
+                            );
                         })}
-                    </View> */}
+                    </View>
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Rating */}
@@ -280,11 +264,6 @@ export default function viewAccom({ propertyId = 51836428 }) {
 }
 
 const styles = StyleSheet.create({
-    // Webview doesn't render if it's nested in a view, so you have to specify the width
-    webview: {
-        fontSize: 200,
-        backgroundColor: 'inherit',
-    },
     container: {
         marginHorizontal: 20,
     },
