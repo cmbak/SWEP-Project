@@ -82,9 +82,6 @@ const exampleResult = {
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
 
-const deviceWidth = Dimensions.get('window').width;
-const deviceHeight = Dimensions.get('window');
-
 export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
 
@@ -122,11 +119,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
     // Used to format listing description which might have html tags in it
     const formatDescription = (text) => {
-        console.log(text);
-        // let formattedText = text.replace('<br>', '\n');
-        let formattedText = text.replace(/<\/?[^>]+(>|$)/g, '');
-        // formattedText.replace('<br><br>', '\n\n');
-        console.log(formattedText);
+        let formattedText = text.replaceAll('<br>', '\n');
+        formattedText = formattedText.replace(/<\/?[^>]+(>|$)/g, ''); // Gets rid of html tags
+        formattedText = formattedText.replaceAll('&amp;', '&');
         return formattedText;
     };
 
@@ -164,19 +159,24 @@ export default function viewAccom({ propertyId = 51836428 }) {
                 </View>
                 <View style={[styles.horizLine, styles.container]}></View>
                 {/* Description - API returns a html formatted string */}
-                <WebView
+                {/* <WebView
                     style={[
                         {
                             width: Dimensions.get('window').width,
                             height: Dimensions.get('window').height,
                         },
                         styles.webview,
+                        styles.container,
                     ]}
                     originWhitelist={['*']}
                     source={{ html: accomData.description }}
-                />
+                    injectedJavaScript={`const meta = document.createElement('meta'); meta.setAttribute('content', 'width=width, initial-scale=0.5, maximum-scale=0.5, user-scalable=2.0'); meta.setAttribute('name', 'viewport'); document.getElementsByTagName('head')[0].appendChild(meta); `}
+                    scrollEnabled={false}
+                /> */}
                 <View style={[styles.center, styles.container]}>
-                    {/* // TODO FORMAT HTML in string */}
+                    <Text style={styles.descText}>
+                        {formatDescription(accomData.description)}
+                    </Text>
                     {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
@@ -190,6 +190,8 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                 </View> */}
                 </View>
+                <View style={[styles.horizLine, styles.container]}></View>
+
                 {/* Location */}
                 <View style={[styles.container, styles.twoRow]}>
                     <Text style={styles.rowText}>{accomData.address}</Text>
@@ -280,8 +282,8 @@ export default function viewAccom({ propertyId = 51836428 }) {
 const styles = StyleSheet.create({
     // Webview doesn't render if it's nested in a view, so you have to specify the width
     webview: {
-        fontSize: 2,
-        backgroundColor: 'red',
+        fontSize: 200,
+        backgroundColor: 'inherit',
     },
     container: {
         marginHorizontal: 20,
@@ -338,8 +340,7 @@ const styles = StyleSheet.create({
         color: '#e8c31e',
     },
     descText: {
-        fontSize: 14.5,
-        marginBottom: 13,
+        fontSize: 15.5,
     },
     roomsDesc: {
         padding: 13,
