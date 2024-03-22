@@ -2,6 +2,8 @@
 
 `npx expo start`
 
+You can scan the qr code on your phone using the Expo Go app to test the app on your phone
+
 ## Useful links
 
 [React Native docs](https://reactnative.dev/docs/components-and-apis)

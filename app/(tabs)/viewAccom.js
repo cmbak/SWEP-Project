@@ -28,6 +28,7 @@ Accommodation
 
 /* Could add Scrollable Reviews */
 
+// Just to test this without calling the api
 const exampleResult = {
     additionalLinks: [],
     address: 'New Windsor Street, Uxbridge UB8',
@@ -84,6 +85,9 @@ const exampleResult = {
 // For random review ratings
 
 const to1Dp = (num) => {
+    if (num == 0) {
+        return 0.0;
+    }
     let stringFloat = num.toFixed(1);
     return parseFloat(stringFloat);
 };
@@ -105,7 +109,7 @@ const r3 = getRandomScore();
 const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
-    const [accomData, setAccomData] = useState(null);
+    const [accomData, setAccomData] = useState(exampleResult);
 
     const fetchData = async () => {
         const options = {
@@ -218,9 +222,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
 
-                    {/* Facilities */}
+                    {/* Features */}
                     <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>Facilities</Text>
+                        <Text style={styles.rowText}>Features</Text>
 
                         <View style={styles.facilityList}>
                             {accomData.features.map((feature, index) => {
