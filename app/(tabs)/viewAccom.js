@@ -109,7 +109,7 @@ const r3 = getRandomScore();
 const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
-    const [accomData, setAccomData] = useState(exampleResult);
+    const [accomData, setAccomData] = useState(null);
 
     const fetchData = async () => {
         const options = {
@@ -295,8 +295,14 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                 </ScrollView>
             ) : (
-                <View>
-                    <Text>Loading...</Text>
+                <View
+                    style={[
+                        styles.loadingContainer,
+                        styles.center,
+                        styles.container,
+                    ]}
+                >
+                    <Text>Loading Accommodation...</Text>
                 </View>
             )}
         </SafeAreaView>
@@ -306,6 +312,11 @@ export default function viewAccom({ propertyId = 51836428 }) {
 const styles = StyleSheet.create({
     container: {
         marginHorizontal: 20,
+    },
+    loadingContainer: {
+        justifyContent: 'center',
+        alignItems: 'center',
+        flexDirection: 'row',
     },
     twoRow: {
         justifyContent: 'space-between',
