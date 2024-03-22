@@ -109,7 +109,7 @@ const r3 = getRandomScore();
 const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
-    const [accomData, setAccomData] = useState(null);
+    const [accomData, setAccomData] = useState(exampleResult);
 
     const fetchData = async () => {
         const options = {
@@ -215,13 +215,19 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
 
-                    {/* Accessibility */}
-                    <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>Accessibility</Text>
-                        <Text style={styles.rowText}>Something Something</Text>
+                    {/* Beds, baths + living rooms - only render if all three aren't null?*/}
+                    <View style={[styles.container, styles.center]}>
+                        {accomData.baths ? (
+                            <Text>{accomData.baths} Bath</Text>
+                        ) : null}
+                        {accomData.beds ? (
+                            <Text>{accomData.beds} Beds</Text>
+                        ) : null}
+                        {accomData.livingRooms ? (
+                            <Text>{accomData.livingRooms} Living</Text>
+                        ) : null}
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
-
                     {/* Features */}
                     <View style={[styles.container, styles.twoRow]}>
                         <Text style={styles.rowText}>Features</Text>
@@ -238,6 +244,12 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                 );
                             })}
                         </View>
+                    </View>
+                    <View style={[styles.horizLine, styles.container]}></View>
+                    {/* Accessibility */}
+                    <View style={[styles.container, styles.twoRow]}>
+                        <Text style={styles.rowText}>Accessibility</Text>
+                        <Text style={styles.rowText}>Something Something</Text>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
                     {/* Rating */}
@@ -318,6 +330,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
     },
+    bedsContainer: {},
     twoRow: {
         justifyContent: 'space-between',
         flexDirection: 'row',
