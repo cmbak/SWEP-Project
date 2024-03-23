@@ -5,6 +5,8 @@ import {
     Image,
     TouchableOpacity,
     ScrollView,
+    ImageBackground,
+    Pressable,
 } from 'react-native';
 import React, { useEffect, useState } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -157,12 +159,19 @@ export default function viewAccom({ propertyId = 51836428 }) {
             {accomData ? (
                 <ScrollView>
                     <View>
-                        <Image
+                        <ImageBackground
                             style={styles.headerImg}
                             source={{
                                 uri: `${accomData.images[0]}`,
                             }}
-                        />
+                            >
+                            <View>
+                                <TouchableOpacity style = {styles.shareBtn}>
+                                    <FontAwesome size={30} name="share-alt" color="gray" />
+                                    <Text style = {styles.shareTxt}> Share</Text>
+                                </TouchableOpacity>
+                            </View>
+                        </ImageBackground>
                         <View
                             style={[
                                 styles.titleGroup,
@@ -305,6 +314,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             </TouchableOpacity>
                         </View>
                     </View>
+
                 </ScrollView>
             ) : (
                 <View
@@ -438,4 +448,23 @@ const styles = StyleSheet.create({
     phoneNumber: {
         textAlign: 'center',
     },
+    shareBtn:{
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius:8,
+        paddingVertical:3,
+        backgroundColor:'white',
+        width:110,
+        top:15,
+        left:283,
+        elevation:3,
+        flexDirection: 'row',
+        gap:7
+    },
+    shareTxt:{
+        fontSize:16,
+        letterSpacing:0.25,
+        lineHeight:21
+    }
+
 });
