@@ -362,7 +362,8 @@ const styles = StyleSheet.create({
         // resizeMode: 'contain',
     },
     horizLine: {
-        borderBottomColor: '#c7cacc',
+        // borderBottomColor: '#c7cacc',
+        borderBottomColor: '#0E0D0D',
         borderBottomWidth: 1.4,
         marginVertical: 10,
     },
