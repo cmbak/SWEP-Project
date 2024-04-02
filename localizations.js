@@ -2,7 +2,10 @@
 const translations = {
     en: {
         available: 'Available from',
+        month: 'month',
         bath: 'Bath',
+        bed: 'Bed',
+        livRoom: 'Living Room',
         features: 'Features',
         accessibility: 'Accessibility',
         rating: 'Rating',
@@ -12,10 +15,14 @@ const translations = {
         posted: 'Posted By',
         message: 'Message',
         translate: 'Translate',
+        loadingAccom: 'Loading Accommodation...',
     },
     fr: {
         available: 'Disponible à partir de',
+        month: 'mois',
         bath: 'Bain',
+        bed: 'Lit',
+        livRoom: 'Salon',
         features: 'Caractéristiques',
         accessibility: 'Accessibilité',
         rating: 'Evaluation',
@@ -25,6 +32,7 @@ const translations = {
         posted: 'Publié par',
         message: 'Envoyer un message',
         translate: 'Traduire',
+        loadingAccom: 'Chargement les hébergements...',
     },
 };
 
