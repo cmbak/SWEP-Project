@@ -260,8 +260,6 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     {/* Description - API returns a html formatted string */}
                     <View style={[styles.center, styles.container]}>
                         <Text style={styles.descText}>
-                            {/* {formatText(accomData.description)} */}
-                            {/* Only want to show translated desc if length > 0 */}
                             {formatText(description)}
                         </Text>
                         <TouchableOpacity
@@ -270,18 +268,6 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         >
                             <Text style={styles.msgTxt}>Translate</Text>
                         </TouchableOpacity>
-                        {/* <View style={[styles.roomsDesc, styles.container]}>
-                    <View style={[styles.row]}>
-                        <Text>Bed</Text>
-                        <Text>Bathroom</Text>
-                        <Text>Rooms</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text>1</Text>
-                        <Text>1</Text>
-                        <Text>3</Text>
-                    </View>
-                </View> */}
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
 
