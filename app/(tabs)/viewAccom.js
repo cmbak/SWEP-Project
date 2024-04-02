@@ -120,7 +120,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
     const [originalDesc, setOriginalDesc] = useState(exampleResult.description);
     const [translatedDesc, setTranslatedDesc] = useState('');
-    const [description, setDescription] = useState(exampleResult.description);
+    const [description, setDescription] = useState(originalDesc);
 
     const fetchData = async () => {
         const options = {
@@ -168,7 +168,8 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const formatText = (text) => {
         let formattedText = text.replaceAll('<br>', '\n');
         formattedText = formattedText.replace(/<\/?[^>]+(>|$)/g, ''); // Gets rid of html tags
-        formattedText = formattedText.replaceAll('&amp;', '&');
+        formattedText = formattedText.replaceAll('&amp;', '&'); // RE ?
+        formattedText = formattedText.replaceAll('& amp;', '&');
         return formattedText;
     };
 
@@ -261,7 +262,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         <Text style={styles.descText}>
                             {/* {formatText(accomData.description)} */}
                             {/* Only want to show translated desc if length > 0 */}
-                            {description}
+                            {formatText(description)}
                         </Text>
                         <TouchableOpacity onPress={translateDesc}>
                             <Text>Translate</Text>
