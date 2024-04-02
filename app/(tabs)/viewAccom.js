@@ -7,12 +7,19 @@ import {
     ScrollView,
     ImageBackground,
     Pressable,
+    AppState,
+    Platform,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { key, host } from '../../apiKey';
+import { getLocales } from 'expo-localization';
+import translate from 'google-translate-api-x';
+import * as Localization from 'expo-localization';
+import { I18n } from 'i18n-js';
+import { translations } from '../../localizations';
 
 /*
 Accommodation
@@ -24,7 +31,6 @@ Accommodation
 - Facilities
 - Address
 - Postcode
-
 
 */
 
@@ -111,7 +117,15 @@ const r3 = getRandomScore();
 const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
+    const i18n = new I18n(translations);
+    const [locale, setLocale] = useState(getLocales()[0].languageCode);
     const [accomData, setAccomData] = useState(exampleResult);
+    const appState = useRef(AppState.currentState); // I have no idea if this works
+    const [originalDesc, setOriginalDesc] = useState(exampleResult.description);
+    const [translatedDesc, setTranslatedDesc] = useState('');
+    const [description, setDescription] = useState(originalDesc);
+
+    i18n.locale = locale;
 
     const fetchData = async () => {
         const options = {
@@ -137,6 +151,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
     //     fetchData();
     // }, []);
 
+    // For locale update on android
+    useEffect(() => {
+        console.log(getLocales()[0].languageCode);
+        // Localization only changes in Android (in iOS the app is restarted) and
+        // will only happen when the app comes back into the foreground
+        if (Platform.OS !== 'android' || appState !== 'active') return;
+        setLocale(getLocales()[0].languageCode);
+    }, [appState.current]);
+
     // Returns date as dd.mm.yy
     const formatDate = (date) => {
         let formattedDate = new Date(date);
@@ -150,9 +173,49 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const formatText = (text) => {
         let formattedText = text.replaceAll('<br>', '\n');
         formattedText = formattedText.replace(/<\/?[^>]+(>|$)/g, ''); // Gets rid of html tags
-        formattedText = formattedText.replaceAll('&amp;', '&');
+        formattedText = formattedText.replaceAll('&amp;', '&'); // RE ?
+        formattedText = formattedText.replaceAll('& amp;', '&');
         return formattedText;
     };
+
+    // Sets description state to orignalDesc or translatedDesc depending on current description
+    function toggleDesc() {
+        if (translatedDesc.length === 0) {
+            return; // Don't want to swap to empty description before user has pressed translate
+        }
+        console.log(
+            `current desc ${description}\n and translated ${translatedDesc}`
+        );
+        if (description === originalDesc) {
+            setDescription(translatedDesc);
+        } else {
+            setDescription(originalDesc);
+        }
+    }
+
+    // Translates the desc and sets accomData.desc to that
+    async function translateDesc() {
+        console.log('pressed');
+        console.log(`before translation ${translatedDesc.length}`);
+        if (accomData != null) {
+            if (translatedDesc.length === 0) {
+                try {
+                    const res = await translate(accomData.description, {
+                        to: locale,
+                    });
+                    setTranslatedDesc(res.text);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            toggleDesc();
+        }
+    }
+
+    // Want to toggle desc but only after translateDesc state has been updated and not before any translation has occurred
+    useEffect(() => {
+        toggleDesc();
+    }, [translatedDesc]);
 
     return (
         <SafeAreaView>
@@ -164,11 +227,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             source={{
                                 uri: `${accomData.images[0]}`,
                             }}
-                            >
+                        >
                             <View>
-                                <TouchableOpacity style = {styles.shareBtn}>
-                                    <FontAwesome size={30} name="share-alt" color="gray" />
-                                    <Text style = {styles.shareTxt}> Share</Text>
+                                <TouchableOpacity style={styles.shareBtn}>
+                                    <FontAwesome
+                                        size={30}
+                                        name="share-alt"
+                                        color="gray"
+                                    />
+                                    <Text style={styles.shareTxt}> Share</Text>
                                 </TouchableOpacity>
                             </View>
                         </ImageBackground>
@@ -184,34 +251,28 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                     {accomData.name}
                                 </Text>
                                 <Text style={styles.datePosted}>
-                                    {`Available from ${formatDate(
+                                    {`${i18n.t('available')} ${formatDate(
                                         accomData.availableFrom
                                     )}`}
                                 </Text>
                             </View>
-                            <Text
-                                style={styles.price}
-                            >{`£${accomData.price}pcm`}</Text>
+                            <Text style={styles.price}>{`£${
+                                accomData.price
+                            }/${i18n.t('month')}`}</Text>
                         </View>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
                     {/* Description - API returns a html formatted string */}
                     <View style={[styles.center, styles.container]}>
                         <Text style={styles.descText}>
-                            {formatText(accomData.description)}
+                            {formatText(description)}
                         </Text>
-                        {/* <View style={[styles.roomsDesc, styles.container]}>
-                    <View style={[styles.row]}>
-                        <Text>Bed</Text>
-                        <Text>Bathroom</Text>
-                        <Text>Rooms</Text>
-                    </View>
-                    <View style={styles.row}>
-                        <Text>1</Text>
-                        <Text>1</Text>
-                        <Text>3</Text>
-                    </View>
-                </View> */}
+                        <TouchableOpacity
+                            onPress={translateDesc}
+                            style={styles.translateBtn}
+                        >
+                            <Text style={styles.msgTxt}>Translate</Text>
+                        </TouchableOpacity>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
 
@@ -227,19 +288,26 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     {/* Beds, baths + living rooms - only render if all three aren't null?*/}
                     <View style={[styles.container, styles.center]}>
                         {accomData.baths ? (
-                            <Text>{accomData.baths} Bath</Text>
+                            <Text>
+                                {/* TODO PLURAL TRANSLATION? */}
+                                {accomData.baths} {i18n.t('bath')}
+                            </Text>
                         ) : null}
                         {accomData.beds ? (
-                            <Text>{accomData.beds} Beds</Text>
+                            <Text>
+                                {accomData.beds} {i18n.t('bed')}
+                            </Text>
                         ) : null}
                         {accomData.livingRooms ? (
-                            <Text>{accomData.livingRooms} Living</Text>
+                            <Text>
+                                {accomData.livingRooms} {i18n.t('livRoom')}
+                            </Text>
                         ) : null}
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
                     {/* Features */}
                     <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>Features</Text>
+                        <Text style={styles.rowText}>{i18n.t('features')}</Text>
 
                         <View style={styles.facilityList}>
                             {accomData.features.map((feature, index) => {
@@ -257,13 +325,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     <View style={[styles.horizLine, styles.container]}></View>
                     {/* Accessibility */}
                     <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>Accessibility</Text>
+                        <Text style={styles.rowText}>
+                            {i18n.t('accessibility')}
+                        </Text>
                         <Text style={styles.rowText}>Something Something</Text>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
                     {/* Rating */}
                     <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>Rating</Text>
+                        <Text style={styles.rowText}>{i18n.t('rating')}</Text>
                         <View style={[styles.ratingGroup, styles.center]}>
                             <FontAwesome
                                 size={18}
@@ -277,15 +347,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     </View>
                     <View style={[styles.container]}>
                         <View style={styles.twoRow}>
-                            <Text>Wifi</Text>
+                            <Text>{i18n.t('wifi')}</Text>
                             <Text>{r1}</Text>
                         </View>
                         <View style={styles.twoRow}>
-                            <Text>Location</Text>
+                            <Text>{i18n.t('location')}</Text>
                             <Text>{r2}</Text>
                         </View>
                         <View style={styles.twoRow}>
-                            <Text>Cleanliness</Text>
+                            <Text>{i18n.t('cleanliness')}</Text>
                             <Text>{r3}</Text>
                         </View>
                     </View>
@@ -302,7 +372,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             <FontAwesome size={80} name="user" color="gray" />
                         </View>
                         <View style={styles.profileContainer}>
-                            <Text style={styles.postBy}>Posted By</Text>
+                            <Text style={styles.postBy}>
+                                {i18n.t('posted')}
+                            </Text>
                             <Text style={styles.profileName}>
                                 {accomData.agentName}
                             </Text>
@@ -310,11 +382,12 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                 {accomData.agentPhone}
                             </Text>
                             <TouchableOpacity style={styles.msgBtn}>
-                                <Text style={styles.msgTxt}>Message</Text>
+                                <Text style={styles.msgTxt}>
+                                    {i18n.t('message')}
+                                </Text>
                             </TouchableOpacity>
                         </View>
                     </View>
-
                 </ScrollView>
             ) : (
                 <View
@@ -324,7 +397,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         styles.container,
                     ]}
                 >
-                    <Text>Loading Accommodation...</Text>
+                    <Text>{i18n.t('loadingAccom')}</Text>
                 </View>
             )}
         </SafeAreaView>
@@ -396,6 +469,12 @@ const styles = StyleSheet.create({
     descText: {
         fontSize: 15.5,
     },
+    // Probably should be a 'class'
+    translateBtn: {
+        backgroundColor: '#197bc6',
+        padding: 7,
+        margin: 5,
+    },
     roomsDesc: {
         padding: 13,
         justifyContent: 'space-evenly',
@@ -449,23 +528,22 @@ const styles = StyleSheet.create({
     phoneNumber: {
         textAlign: 'center',
     },
-    shareBtn:{
+    shareBtn: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius:8,
-        paddingVertical:3,
-        backgroundColor:'white',
-        width:110,
-        top:15,
-        left:283,
-        elevation:3,
+        borderRadius: 8,
+        paddingVertical: 3,
+        backgroundColor: 'white',
+        width: 110,
+        top: 15,
+        left: 283,
+        elevation: 3,
         flexDirection: 'row',
-        gap:7
+        gap: 7,
     },
-    shareTxt:{
-        fontSize:16,
-        letterSpacing:0.25,
-        lineHeight:21
-    }
-
+    shareTxt: {
+        fontSize: 16,
+        letterSpacing: 0.25,
+        lineHeight: 21,
+    },
 });
