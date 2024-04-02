@@ -7,12 +7,15 @@ import {
     ScrollView,
     ImageBackground,
     Pressable,
+    AppState,
+    Platform,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { key, host } from '../../apiKey';
+import { getLocales } from 'expo-localization';
 
 /*
 Accommodation
@@ -112,6 +115,8 @@ const avgScore = getAvgScore(r1, r2, r3);
 
 export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
+    const appState = useRef(AppState.currentState); // I have no idea if this works
+    const [locale, setLocale] = useState(getLocales()[0].languageCode);
 
     const fetchData = async () => {
         const options = {
@@ -136,6 +141,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
     // useEffect(() => {
     //     fetchData();
     // }, []);
+
+    // For locale update on android
+    useEffect(() => {
+        console.log(getLocales()[0].languageCode);
+        // Localization only changes in Android (in iOS the app is restarted) and
+        // will only happen when the app comes back into the foreground
+        if (Platform.OS !== 'android' || appState !== 'active') return;
+        setLocale(getLocales()[0].languageCode);
+    }, [appState.current]);
 
     // Returns date as dd.mm.yy
     const formatDate = (date) => {
@@ -164,11 +178,15 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             source={{
                                 uri: `${accomData.images[0]}`,
                             }}
-                            >
+                        >
                             <View>
-                                <TouchableOpacity style = {styles.shareBtn}>
-                                    <FontAwesome size={30} name="share-alt" color="gray" />
-                                    <Text style = {styles.shareTxt}> Share</Text>
+                                <TouchableOpacity style={styles.shareBtn}>
+                                    <FontAwesome
+                                        size={30}
+                                        name="share-alt"
+                                        color="gray"
+                                    />
+                                    <Text style={styles.shareTxt}> Share</Text>
                                 </TouchableOpacity>
                             </View>
                         </ImageBackground>
@@ -314,7 +332,6 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             </TouchableOpacity>
                         </View>
                     </View>
-
                 </ScrollView>
             ) : (
                 <View
@@ -449,23 +466,22 @@ const styles = StyleSheet.create({
     phoneNumber: {
         textAlign: 'center',
     },
-    shareBtn:{
+    shareBtn: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius:8,
-        paddingVertical:3,
-        backgroundColor:'white',
-        width:110,
-        top:15,
-        left:283,
-        elevation:3,
+        borderRadius: 8,
+        paddingVertical: 3,
+        backgroundColor: 'white',
+        width: 110,
+        top: 15,
+        left: 283,
+        elevation: 3,
         flexDirection: 'row',
-        gap:7
+        gap: 7,
     },
-    shareTxt:{
-        fontSize:16,
-        letterSpacing:0.25,
-        lineHeight:21
-    }
-
+    shareTxt: {
+        fontSize: 16,
+        letterSpacing: 0.25,
+        lineHeight: 21,
+    },
 });
