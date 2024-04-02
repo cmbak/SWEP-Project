@@ -16,6 +16,7 @@ import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { key, host } from '../../apiKey';
 import { getLocales } from 'expo-localization';
+import translate from 'google-translate-api-x';
 
 /*
 Accommodation
@@ -117,6 +118,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const [accomData, setAccomData] = useState(exampleResult);
     const appState = useRef(AppState.currentState); // I have no idea if this works
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
+    const [originalDesc, setOriginalDesc] = useState(exampleResult.description);
+    const [translatedDesc, setTranslatedDesc] = useState('');
+    const [description, setDescription] = useState(exampleResult.description);
 
     const fetchData = async () => {
         const options = {
@@ -168,6 +172,45 @@ export default function viewAccom({ propertyId = 51836428 }) {
         return formattedText;
     };
 
+    // Sets description state to orignalDesc or translatedDesc depending on current description
+    function toggleDesc() {
+        if (translatedDesc.length === 0) {
+            return; // Don't want to swap to empty description before user has pressed translate
+        }
+        console.log(
+            `current desc ${description}\n and translated ${translatedDesc}`
+        );
+        if (description === originalDesc) {
+            setDescription(translatedDesc);
+        } else {
+            setDescription(originalDesc);
+        }
+    }
+
+    // Translates the desc and sets accomData.desc to that
+    async function translateDesc() {
+        console.log('pressed');
+        console.log(`before translation ${translatedDesc.length}`);
+        if (accomData != null) {
+            if (translatedDesc.length === 0) {
+                try {
+                    const res = await translate(accomData.description, {
+                        to: locale,
+                    });
+                    setTranslatedDesc(res.text);
+                } catch (error) {
+                    console.log(error);
+                }
+            }
+            toggleDesc();
+        }
+    }
+
+    // Want to toggle desc but only after translateDesc state has been updated and not before any translation has occurred
+    useEffect(() => {
+        toggleDesc();
+    }, [translatedDesc]);
+
     return (
         <SafeAreaView>
             {accomData ? (
@@ -216,8 +259,13 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     {/* Description - API returns a html formatted string */}
                     <View style={[styles.center, styles.container]}>
                         <Text style={styles.descText}>
-                            {formatText(accomData.description)}
+                            {/* {formatText(accomData.description)} */}
+                            {/* Only want to show translated desc if length > 0 */}
+                            {description}
                         </Text>
+                        <TouchableOpacity onPress={translateDesc}>
+                            <Text>Translate</Text>
+                        </TouchableOpacity>
                         {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
                         <Text>Bed</Text>
