@@ -264,8 +264,11 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             {/* Only want to show translated desc if length > 0 */}
                             {formatText(description)}
                         </Text>
-                        <TouchableOpacity onPress={translateDesc}>
-                            <Text>Translate</Text>
+                        <TouchableOpacity
+                            onPress={translateDesc}
+                            style={styles.translateBtn}
+                        >
+                            <Text style={styles.msgTxt}>Translate</Text>
                         </TouchableOpacity>
                         {/* <View style={[styles.roomsDesc, styles.container]}>
                     <View style={[styles.row]}>
@@ -461,6 +464,12 @@ const styles = StyleSheet.create({
     },
     descText: {
         fontSize: 15.5,
+    },
+    // Probably should be a 'class'
+    translateBtn: {
+        backgroundColor: '#197bc6',
+        padding: 7,
+        margin: 5,
     },
     roomsDesc: {
         padding: 13,
