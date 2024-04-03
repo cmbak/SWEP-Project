@@ -16,6 +16,7 @@ const translations = {
         message: 'Message',
         translate: 'Translate',
         loadingAccom: 'Loading Accommodation...',
+        share: 'Share',
     },
     fr: {
         available: 'Disponible à partir de',
@@ -33,6 +34,7 @@ const translations = {
         message: 'Envoyer un message',
         translate: 'Traduire',
         loadingAccom: 'Chargement les hébergements...',
+        share: 'Partager',
     },
 };
 
