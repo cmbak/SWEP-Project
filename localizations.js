@@ -36,6 +36,24 @@ const translations = {
         loadingAccom: 'Chargement les hébergements...',
         share: 'Partager',
     },
+    de: {
+        available: 'Verfügbar seit',
+        month: 'Monat',
+        bath: 'Bad',
+        bed: 'Bett',
+        livRoom: 'Wohnzimmer',
+        features: 'Funktionen',
+        accessibility: 'Zugänglichkeit',
+        rating: 'Bewertung',
+        wifi: 'WLAN',
+        location: 'Lage',
+        cleanliness: 'Sauberkeit',
+        posted: 'Veröffentlicht von',
+        message: 'Eine Nachricht senden',
+        translate: 'Übersetzen',
+        loadingAccom: 'Unterkünfte werden geladen...',
+        share: 'Teilen',
+    },
 };
 
 export { translations };
