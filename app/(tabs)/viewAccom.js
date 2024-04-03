@@ -9,9 +9,13 @@ import {
     Pressable,
     AppState,
     Platform,
+    FlatList,
+    Dimensions,
+    Animated
 } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { FontAwesome6 } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
 import { key, host } from '../../apiKey';
@@ -66,7 +70,95 @@ export default function viewAccom({ propertyId = 51836428 }) {
         } catch (error) {
             console.error(error);
         }
+        
     };
+    
+
+    const {width, height} = Dimensions.get('screen');
+
+        const Pagination = ({data, scrollX}) => {
+            return (
+                <View style={styles.dotContainer}>
+                    {
+                        data.map((_, idx) => {
+                            const inputRange = [(idx-1) * width, idx * width, (idx+1) * width];
+
+                            const dotWidth = scrollX.interpolate({
+                                inputRange,
+                                outputRange: [12, 20, 12],
+                                extrapolate: 'clamp',
+                            });
+
+                            return (
+                                <Animated.View 
+                                    key={idx.toString()} 
+                                    style={[styles.dot, {width: dotWidth}]}
+                                />
+                            )
+                        })
+                    }
+                </View>
+            )
+        };
+
+        const SlideItem = ({item}) => {
+            return (
+                <View style={styles.slidesContainer}>  
+                    <Image source={{ uri: item}}  style={styles.slides}></Image>
+                    {/* <Text>skibidi</Text> */}
+                </View>
+            )
+        };
+
+        const Slider = () => {
+            const scrollX = useRef(new Animated.Value(0)).current;
+            
+            const handleOnScroll = event => {
+                Animated.event(
+                    [
+                        {
+                            nativeEvent: {
+                                contentOffset: {
+                                    x: scrollX,
+                                },
+                            },
+                        },
+                    ],
+                    {
+                        useNativeDriver: false,
+                    }
+                )
+                (event);
+            };
+    
+            return (
+                <View>
+                    <FlatList 
+                        data={accomData.images}
+                        renderItem={({item}) => <SlideItem item={item} />}
+                        horizontal
+                        pagingEnabled
+                        showsHorizontalScrollIndicator={false}
+                        onScroll={handleOnScroll}
+                    />
+                    <View>
+                        <TouchableOpacity style = {[styles.shareBtn, styles.shadow]}>
+                            <FontAwesome 
+                                size={30} 
+                                name="share-alt" 
+                                color="gray" 
+                            />
+                            <Text 
+                                style={styles.shareTxt}>
+                                {i18n.t('share')}
+                            </Text>
+                        </TouchableOpacity>
+                    </View>
+                    <Pagination data={accomData.images} scrollX={scrollX}/>
+                </View>
+            )
+        };
+
 
     // UNCOMMENT WHEN NEEDED
     // useEffect(() => {
@@ -144,25 +236,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
             {accomData ? (
                 <ScrollView>
                     <View>
-                        <ImageBackground
-                            style={styles.headerImg}
-                            source={{
-                                uri: `${accomData.images[0]}`,
-                            }}
-                        >
-                            <View>
-                                <TouchableOpacity style={styles.shareBtn}>
-                                    <FontAwesome
-                                        size={30}
-                                        name="share-alt"
-                                        color="gray"
-                                    />
-                                    <Text style={styles.shareTxt}>
-                                        {i18n.t('share')}
-                                    </Text>
-                                </TouchableOpacity>
-                            </View>
-                        </ImageBackground>
+                        {Slider()}
                         <View
                             style={[
                                 styles.titleGroup,
@@ -180,64 +254,82 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                     )}`}
                                 </Text>
                             </View>
-                            <Text style={styles.price}>{`£${
-                                accomData.price
-                            }/${i18n.t('month')}`}</Text>
+                            <View style={[styles.priceContainer, styles.shadow]}>
+                                <Text style={styles.price}>
+                                    {`£${accomData.price}/${i18n.t('month')}`}
+                                </Text>
+                            </View>
                         </View>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
-                    {/* Description - API returns a html formatted string */}
-                    <View style={[styles.center, styles.container]}>
-                        <Text style={styles.descText}>
-                            {formatText(description)}
-                        </Text>
-                        {/* TODO detect language of description */}
-                        {locale !== 'en' ? (
-                            <TouchableOpacity
-                                onPress={translateDesc}
-                                style={styles.translateBtn}
-                            >
-                                <Text style={styles.msgTxt}>
-                                    {i18n.t('translate')}
-                                </Text>
-                            </TouchableOpacity>
+
+                    {/* Beds, baths + living rooms - only render if all three aren't null?*/}
+                    <View style={[styles.container, styles.center, styles.row]}>
+                        {accomData.baths ? (
+                            <Text>
+                                <FontAwesome name="bathtub" size={24} color="black" />
+                                {/* TODO PLURAL TRANSLATION? */}
+                                <Text>   {accomData.baths} {i18n.t('bath')}</Text> 
+                            </Text>
+                        ) : null}
+                        {accomData.beds ? (
+                            <Text>
+                                {/* <FontAwesome5 name="bed" size={24} color="black" /> */}
+                                <FontAwesome name="bed" size={24} color="black" />
+                                <Text>   {accomData.beds} {i18n.t('bed')}</Text>                     
+                            </Text>
+                        ) : null}
+                        {accomData.livingRooms ? (
+                            <Text>
+                                <FontAwesome6 name="couch" size={22} color="black" />
+                                <Text>   {accomData.livingRooms} {i18n.t('livRoom')}</Text>
+                            </Text>
                         ) : null}
                     </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
+
+                    {/* Description - API returns a html formatted string */}
+                    <View style={[styles.horizLine, styles.container]}>
+                        <Text style={styles.containerTitles}>{i18n.t('desc')}</Text>    
+                    </View>
+                    <View style={[styles.center, styles.container]}>
+                        <View style={[styles.informationContainer, styles.shadow]}>
+                            <Text style={styles.descText}>
+                                {formatText(description)}
+                            </Text>
+                            {/* TODO detect language of description */}
+                            {locale !== 'en' ? (
+                                <TouchableOpacity
+                                    onPress={translateDesc}
+                                    style={styles.translateBtn}
+                                >
+                                    <Text style={styles.msgTxt}>
+                                        {i18n.t('translate')}
+                                    </Text>
+                                </TouchableOpacity>
+                            ) : null}
+                        </View>
+                    </View>
+
 
                     {/* Location */}
-                    <View style={[styles.container, styles.twoRow]}>
+                    <View style={[styles.horizLine, styles.container]}>
+                        <Text style={styles.containerTitles}>{i18n.t('location')}</Text>
+                    </View>
+
+                    <View style={[styles.container, styles.twoRow, styles.informationContainer, styles.shadow]}>
                         <Text style={styles.rowText}>{accomData.address}</Text>
                         <Text style={styles.rowText}>
                             {accomData.postalCode}
                         </Text>
                     </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
 
-                    {/* Beds, baths + living rooms - only render if all three aren't null?*/}
-                    <View style={[styles.container, styles.center]}>
-                        {accomData.baths ? (
-                            <Text>
-                                {/* TODO PLURAL TRANSLATION? */}
-                                {accomData.baths} {i18n.t('bath')}
-                            </Text>
-                        ) : null}
-                        {accomData.beds ? (
-                            <Text>
-                                {accomData.beds} {i18n.t('bed')}
-                            </Text>
-                        ) : null}
-                        {accomData.livingRooms ? (
-                            <Text>
-                                {accomData.livingRooms} {i18n.t('livRoom')}
-                            </Text>
-                        ) : null}
+                    {/* Features */}
+                    <View style={[styles.horizLine, styles.container]}>
+                        <Text style={styles.containerTitles}>{i18n.t('features')}</Text>
                     </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
-                    {/* TODO - Translate Features */}
-                    <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>{i18n.t('features')}</Text>
 
+                    {/* TODO - Translate Features */}
+                    <View style={[styles.container, styles.informationContainer, styles.shadow]}>
                         <View style={styles.facilityList}>
                             {accomData.features.map((feature, index) => {
                                 return (
@@ -251,54 +343,63 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             })}
                         </View>
                     </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
+
                     {/* Accessibility */}
-                    <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>
-                            {i18n.t('accessibility')}
-                        </Text>
-                        <Text style={styles.rowText}>Something Something</Text>
+                    <View style={[styles.horizLine, styles.container]}>
+                        <Text style={styles.containerTitles}>{i18n.t('accessibility')}</Text>
                     </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
+                    <View style={[styles.container, styles.informationContainer, styles.shadow]}>
+                        <Text>N/A</Text>
+                    </View>
+
+
                     {/* Rating */}
-                    <View style={[styles.container, styles.twoRow]}>
-                        <Text style={styles.rowText}>{i18n.t('rating')}</Text>
-                        <View style={[styles.ratingGroup, styles.center]}>
-                            <FontAwesome
-                                size={18}
-                                name="star"
-                                style={styles.star}
-                            />
-                            <Text style={[styles.rating, styles.rowText]}>
-                                {`${randomRatings.avgRating} / 10`}
+                    <View style={[styles.horizLine, styles.container]}>
+                        <Text style={styles.containerTitles}>{i18n.t('rating')}</Text>
+                    </View>
+
+                    <View style={styles.ratingGroup}>
+                        <View style={[styles.container, styles.twoRow, styles.informationContainer, styles.shadow, styles.rating]}>
+                            <Text style={[styles.ratingText, styles.twoRow]}>
+                                {`${randomRatings.avgRating}`}
+                            </Text>
+                            <Text style={styles.ratingText}>
+                                <FontAwesome
+                                    size={50}
+                                    name="star"
+                                    style={styles.star}
+                                />
                             </Text>
                         </View>
+
+                        <View style={[styles.container, styles.informationContainer, styles.shadow, styles.rating]}>
+                            <View style={styles.twoRow}>
+                                <Text style={{fontWeight:'600'}}>{i18n.t('wifi')}</Text>
+                                <Text>{randomRatings.ratingsArr[0]}</Text>
+                            </View>
+                            <View style={styles.twoRow}>
+                                <Text style={{fontWeight:'600'}}>{i18n.t('location')}</Text>
+                                <Text>{randomRatings.ratingsArr[1]}</Text>
+                            </View>
+                            <View style={styles.twoRow}>
+                                <Text style={{fontWeight:'600'}}>{i18n.t('cleanliness')}</Text>
+                                <Text>{randomRatings.ratingsArr[2]}</Text>
+                            </View>
+                        </View>
                     </View>
-                    <View style={[styles.container]}>
-                        <View style={styles.twoRow}>
-                            <Text>{i18n.t('wifi')}</Text>
-                            <Text>{randomRatings.ratingsArr[0]}</Text>
-                        </View>
-                        <View style={styles.twoRow}>
-                            <Text>{i18n.t('location')}</Text>
-                            <Text>{randomRatings.ratingsArr[1]}</Text>
-                        </View>
-                        <View style={styles.twoRow}>
-                            <Text>{i18n.t('cleanliness')}</Text>
-                            <Text>{randomRatings.ratingsArr[2]}</Text>
-                        </View>
-                    </View>
-                    <View style={[styles.horizLine, styles.container]}></View>
+
                     {/* User Profile */}
+                    <View style={[styles.horizLine, styles.container]}></View>
                     <View
                         style={[
                             styles.container,
                             styles.profileCard,
                             styles.center,
+                            styles.shadow,
                         ]}
                     >
-                        <View style={styles.profilePic}>
-                            <FontAwesome size={80} name="user" color="gray" />
+                        <View>
+                            <Image style={styles.profilePic} source={require('./images/profilePic.png')}></Image>
                         </View>
                         <View style={styles.profileContainer}>
                             <Text style={styles.postBy}>
@@ -342,6 +443,22 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         flexDirection: 'row',
     },
+    informationContainer: {
+        backgroundColor: '#C0C0C0',
+        padding: 20,
+        borderRadius: 13,
+    },
+    priceContainer: {
+        backgroundColor: '#C0C0C0',
+        marginTop: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 10,
+        borderRadius: 13,
+    },
+    containerTitles: {
+        fontSize: 20,
+        fontWeight: '500',
+    },
     bedsContainer: {},
     twoRow: {
         justifyContent: 'space-between',
@@ -365,44 +482,55 @@ const styles = StyleSheet.create({
     },
     horizLine: {
         // borderBottomColor: '#c7cacc',
-        borderBottomColor: '#0E0D0D',
-        borderBottomWidth: 1.4,
-        marginVertical: 10,
+        // borderBottomColor: '#0E0D0D',
+        // borderBottomWidth: 1,
+        marginBottom:10,
+        marginTop:20,
+        // backgroundColor: 'green',
+        // fontSize: 30,
+        paddingLeft: 20,
     },
     titleGroup: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        paddingTop: 25,
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // paddingTop: 25,
+        alignContent: 'center',
     },
     datePosted: {
         color: '#494949',
+        alignSelf: 'center',
     },
     price: {
-        fontSize: 18,
+        padding: 7,
+        fontSize: 20,
+        alignSelf: 'center',
+        fontWeight: '500',
     },
     accomTitle: {
         fontSize: 27,
-        // fontWeight: 'bold',
+        alignSelf: 'center',
+        fontWeight: 'bold',
     },
     ratingGroup: {
         flexDirection: 'row',
-        gap: 10,
+        // gap: 10,
         marginBottom: 7,
     },
-    // rating: {
-    //     fontSize: 16,
-    // },
+    rating: {
+        flex: 1,
+    },
+    ratingText: {
+        // backgroundColor:'blue',
+        alignSelf: 'center',
+        justifyContent: 'center',
+        fontSize: 35,
+        fontWeight:'600',
+    },
     star: {
         color: '#e8c31e',
     },
     descText: {
         fontSize: 15.5,
-    },
-    // Probably should be a 'class'
-    translateBtn: {
-        backgroundColor: '#197bc6',
-        padding: 7,
-        margin: 5,
     },
     roomsDesc: {
         padding: 13,
@@ -417,12 +545,13 @@ const styles = StyleSheet.create({
         color: 'blue',
     },
     facilityText: {
-        textAlign: 'right',
+        textAlign: 'left',
     },
     profileCard: {
-        borderColor: 'darkgray',
-        borderWidth: 1,
-        backgroundColor: '#e8e9ea',
+        // borderColor: 'darkgray',
+        // borderWidth: 1,
+        borderRadius: 13,
+        backgroundColor: '#C6FF00',
         flexDirection: 'row',
         paddingHorizontal: 15,
         paddingVertical: 30,
@@ -432,8 +561,13 @@ const styles = StyleSheet.create({
         flex: 1,
         alignItems: 'center',
         alignSelf: 'center',
+        width: 100,
+        height: 100,
+        margin: 10,
     },
     profileContainer: {
+        // backgroundColor:'black',
+        marginLeft: 20,
         gap: 2,
         flex: 1,
     },
@@ -444,35 +578,84 @@ const styles = StyleSheet.create({
     profileName: {
         marginBottom: 10,
         fontSize: 19,
+        fontWeight: '600',
         textAlign: 'center',
     },
     msgBtn: {
-        backgroundColor: '#197bc6',
-        padding: 7,
+        backgroundColor: '#1e1e1e',
+        borderRadius: 13,
+        padding: 10,
     },
     msgTxt: {
         color: 'white',
         textAlign: 'center',
+        fontWeight: '700',
     },
     phoneNumber: {
         textAlign: 'center',
+        fontWeight: '500',
     },
-    shareBtn: {
+    shareBtn:{
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius: 8,
-        paddingVertical: 3,
-        backgroundColor: 'white',
-        width: 110,
-        top: 15,
-        left: 283,
-        elevation: 3,
+        borderRadius:8,
+        paddingVertical:3,
+        backgroundColor:'white',
+        width:90,
+        bottom:280,
+        left:290,
         flexDirection: 'row',
-        gap: 7,
+        gap:7
     },
-    shareTxt: {
-        fontSize: 16,
-        letterSpacing: 0.25,
-        lineHeight: 21,
+    shareTxt:{
+        fontSize:16,
+        letterSpacing:0.25,
+        lineHeight:21
+    },
+    shadow: {
+        ...Platform.select({
+            ios: {
+                shadowColor: '#171717',
+                shadowOffset: {width: 4, height: 6},
+                shadowOpacity: 0.2,
+                shadowRadius: 3,
+            },
+            android: {
+                elevation: 7,
+                shadowColor: 'black',
+            },
+        }), 
+    },
+    slidesContainer: {
+        width: Dimensions.get('screen').width,
+        height: 300,
+    },
+    slides: {
+        flex: 1,
+        flexDirection: 'column',
+        // width: '100%',
+    },
+    dot: {
+        width: 12,
+        height: 12,
+        borderRadius: 6,
+        backgroundColor: '#CCC',
+        marginHorizontal: 3,
+        opacity: 0.5,
+    },
+    dotContainer: {
+        position: 'absolute',
+        bottom: 10,
+        flexDirection: 'row',
+        marginHorizontal: 3,
+        width: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+     // Probably should be a 'class'
+    translateBtn: {
+        backgroundColor: '#197bc6',
+        padding: 7,
+        margin: 5,
     },
 });
