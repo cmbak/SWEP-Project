@@ -17,9 +17,9 @@ import axios from 'axios';
 import { key, host } from '../../apiKey';
 import { getLocales } from 'expo-localization';
 import translate from 'google-translate-api-x';
-import * as Localization from 'expo-localization';
 import { I18n } from 'i18n-js';
 import { translations } from '../../localizations';
+import { RandomRatings } from '../../randomRatings';
 
 /*
 Accommodation
@@ -89,33 +89,6 @@ const exampleResult = {
     url: 'https://www.zoopla.co.uk/to-rent/details/51836428/',
     uuid: 'B8A5A667-DF64-430D-B384-701781C50E9A',
 };
-
-// For random review ratings
-
-const to1Dp = (num) => {
-    if (num == 0) {
-        return 0.0;
-    }
-    let stringFloat = num.toFixed(1);
-    return parseFloat(stringFloat);
-};
-
-// Returns a random number from 0 to 10
-const getRandomScore = () => {
-    const score = Math.floor(Math.random() * 110) / 10;
-    return to1Dp(score);
-};
-
-const getAvgScore = (r1, r2, r3) => {
-    let avg = (r1 + r2 + r3) / 3;
-    return to1Dp(avg);
-};
-
-const r1 = getRandomScore();
-const r2 = getRandomScore();
-const r3 = getRandomScore();
-const avgScore = getAvgScore(r1, r2, r3);
-
 export default function viewAccom({ propertyId = 51836428 }) {
     const i18n = new I18n(translations);
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
@@ -125,6 +98,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const [translatedDesc, setTranslatedDesc] = useState('');
     const [description, setDescription] = useState(originalDesc);
 
+    const randomRatings = new RandomRatings(3);
     i18n.locale = locale;
 
     const fetchData = async () => {
@@ -235,7 +209,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                         name="share-alt"
                                         color="gray"
                                     />
-                                    <Text style={styles.shareTxt}> Share</Text>
+                                    <Text style={styles.shareTxt}>
+                                        {i18n.t('share')}
+                                    </Text>
                                 </TouchableOpacity>
                             </View>
                         </ImageBackground>
@@ -267,12 +243,17 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         <Text style={styles.descText}>
                             {formatText(description)}
                         </Text>
-                        <TouchableOpacity
-                            onPress={translateDesc}
-                            style={styles.translateBtn}
-                        >
-                            <Text style={styles.msgTxt}>Translate</Text>
-                        </TouchableOpacity>
+                        {/* TODO detect language of description */}
+                        {locale !== 'en' ? (
+                            <TouchableOpacity
+                                onPress={translateDesc}
+                                style={styles.translateBtn}
+                            >
+                                <Text style={styles.msgTxt}>
+                                    {i18n.t('translate')}
+                                </Text>
+                            </TouchableOpacity>
+                        ) : null}
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
 
@@ -305,7 +286,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         ) : null}
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
-                    {/* Features */}
+                    {/* TODO - Translate Features */}
                     <View style={[styles.container, styles.twoRow]}>
                         <Text style={styles.rowText}>{i18n.t('features')}</Text>
 
@@ -341,22 +322,22 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                 style={styles.star}
                             />
                             <Text style={[styles.rating, styles.rowText]}>
-                                {`${avgScore} / 10`}
+                                {`${randomRatings.avgRating} / 10`}
                             </Text>
                         </View>
                     </View>
                     <View style={[styles.container]}>
                         <View style={styles.twoRow}>
                             <Text>{i18n.t('wifi')}</Text>
-                            <Text>{r1}</Text>
+                            <Text>{randomRatings.ratingsArr[0]}</Text>
                         </View>
                         <View style={styles.twoRow}>
                             <Text>{i18n.t('location')}</Text>
-                            <Text>{r2}</Text>
+                            <Text>{randomRatings.ratingsArr[1]}</Text>
                         </View>
                         <View style={styles.twoRow}>
                             <Text>{i18n.t('cleanliness')}</Text>
-                            <Text>{r3}</Text>
+                            <Text>{randomRatings.ratingsArr[2]}</Text>
                         </View>
                     </View>
                     <View style={[styles.horizLine, styles.container]}></View>
