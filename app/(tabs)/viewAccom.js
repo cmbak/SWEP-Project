@@ -51,7 +51,12 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const [description, setDescription] = useState(originalDesc);
 
     const randomRatings = new RandomRatings(3);
-    i18n.locale = locale;
+
+    if (locale !== 'en' || locale !== 'de') {
+        i18n.locale = 'en';
+    } else {
+        i18n.locale = locale;
+    }
 
     const fetchData = async () => {
         const options = {
