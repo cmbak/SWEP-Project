@@ -52,10 +52,10 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
     const randomRatings = new RandomRatings(3);
 
-    if (locale !== 'en' || locale !== 'de' || locale !== 'fr') {
-        i18n.locale = 'en';
-    } else {
+    if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
+    } else {
+        i18n.locale = 'en';
     }
 
     const fetchData = async () => {
@@ -319,7 +319,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                 {formatText(description)}
                             </Text>
                             {/* TODO detect language of description */}
-                            {locale !== 'en' ? (
+                            {i18n.locale !== 'en' ? (
                                 <TouchableOpacity
                                     onPress={translateDesc}
                                     style={styles.translateBtn}
