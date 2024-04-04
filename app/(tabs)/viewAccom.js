@@ -11,7 +11,7 @@ import {
     Platform,
     FlatList,
     Dimensions,
-    Animated
+    Animated,
 } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -24,7 +24,7 @@ import translate from 'google-translate-api-x';
 import { I18n } from 'i18n-js';
 import { translations } from '../../localizations';
 import { RandomRatings } from '../../randomRatings';
-import { exampleResult } from '../../exampleListing';
+import { exampleResult } from '../../exampleListing1';
 
 /*
 Accommodation
@@ -70,95 +70,85 @@ export default function viewAccom({ propertyId = 51836428 }) {
         } catch (error) {
             console.error(error);
         }
-        
     };
-    
 
-    const {width, height} = Dimensions.get('screen');
+    const { width, height } = Dimensions.get('screen');
 
-        const Pagination = ({data, scrollX}) => {
-            return (
-                <View style={styles.dotContainer}>
+    const Pagination = ({ data, scrollX }) => {
+        return (
+            <View style={styles.dotContainer}>
+                {data.map((_, idx) => {
+                    const inputRange = [
+                        (idx - 1) * width,
+                        idx * width,
+                        (idx + 1) * width,
+                    ];
+
+                    const dotWidth = scrollX.interpolate({
+                        inputRange,
+                        outputRange: [12, 20, 12],
+                        extrapolate: 'clamp',
+                    });
+
+                    return (
+                        <Animated.View
+                            key={idx.toString()}
+                            style={[styles.dot, { width: dotWidth }]}
+                        />
+                    );
+                })}
+            </View>
+        );
+    };
+
+    const SlideItem = ({ item }) => {
+        return (
+            <View style={styles.slidesContainer}>
+                <Image source={{ uri: item }} style={styles.slides}></Image>
+            </View>
+        );
+    };
+
+    const Slider = () => {
+        const scrollX = useRef(new Animated.Value(0)).current;
+
+        const handleOnScroll = (event) => {
+            Animated.event(
+                [
                     {
-                        data.map((_, idx) => {
-                            const inputRange = [(idx-1) * width, idx * width, (idx+1) * width];
-
-                            const dotWidth = scrollX.interpolate({
-                                inputRange,
-                                outputRange: [12, 20, 12],
-                                extrapolate: 'clamp',
-                            });
-
-                            return (
-                                <Animated.View 
-                                    key={idx.toString()} 
-                                    style={[styles.dot, {width: dotWidth}]}
-                                />
-                            )
-                        })
-                    }
-                </View>
-            )
-        };
-
-        const SlideItem = ({item}) => {
-            return (
-                <View style={styles.slidesContainer}>  
-                    <Image source={{ uri: item}}  style={styles.slides}></Image>
-                    {/* <Text>skibidi</Text> */}
-                </View>
-            )
-        };
-
-        const Slider = () => {
-            const scrollX = useRef(new Animated.Value(0)).current;
-            
-            const handleOnScroll = event => {
-                Animated.event(
-                    [
-                        {
-                            nativeEvent: {
-                                contentOffset: {
-                                    x: scrollX,
-                                },
+                        nativeEvent: {
+                            contentOffset: {
+                                x: scrollX,
                             },
                         },
-                    ],
-                    {
-                        useNativeDriver: false,
-                    }
-                )
-                (event);
-            };
-    
-            return (
-                <View>
-                    <FlatList 
-                        data={accomData.images}
-                        renderItem={({item}) => <SlideItem item={item} />}
-                        horizontal
-                        pagingEnabled
-                        showsHorizontalScrollIndicator={false}
-                        onScroll={handleOnScroll}
-                    />
-                    <View>
-                        <TouchableOpacity style = {[styles.shareBtn, styles.shadow]}>
-                            <FontAwesome 
-                                size={30} 
-                                name="share-alt" 
-                                color="gray" 
-                            />
-                            <Text 
-                                style={styles.shareTxt}>
-                                {i18n.t('share')}
-                            </Text>
-                        </TouchableOpacity>
-                    </View>
-                    <Pagination data={accomData.images} scrollX={scrollX}/>
-                </View>
-            )
+                    },
+                ],
+                {
+                    useNativeDriver: false,
+                }
+            )(event);
         };
 
+        return (
+            <View>
+                <FlatList
+                    data={accomData.images}
+                    renderItem={({ item }) => <SlideItem item={item} />}
+                    horizontal
+                    pagingEnabled
+                    showsHorizontalScrollIndicator={false}
+                    onScroll={handleOnScroll}
+                />
+                <View>
+                    <TouchableOpacity style={[styles.shareBtn, styles.shadow]}>
+                        <FontAwesome size={30} name="share-alt" color="gray" />
+                        <Text style={styles.shareTxt}>{i18n.t('share')}</Text>
+                    </TouchableOpacity>
+                </View>
+                <Pagination data={accomData.images} scrollX={scrollX} />
+            </View>
+        );
+    };
 
     // UNCOMMENT WHEN NEEDED
     // useEffect(() => {
@@ -254,7 +244,9 @@ export default function viewAccom({ propertyId = 51836428 }) {
                                     )}`}
                                 </Text>
                             </View>
-                            <View style={[styles.priceContainer, styles.shadow]}>
+                            <View
+                                style={[styles.priceContainer, styles.shadow]}
+                            >
                                 <Text style={styles.price}>
                                     {`£${accomData.price}/${i18n.t('month')}`}
                                 </Text>
@@ -267,32 +259,57 @@ export default function viewAccom({ propertyId = 51836428 }) {
                     <View style={[styles.container, styles.center, styles.row]}>
                         {accomData.baths ? (
                             <Text>
-                                <FontAwesome name="bathtub" size={24} color="black" />
+                                <FontAwesome
+                                    name="bathtub"
+                                    size={24}
+                                    color="black"
+                                />
                                 {/* TODO PLURAL TRANSLATION? */}
-                                <Text>   {accomData.baths} {i18n.t('bath')}</Text> 
+                                <Text>
+                                    {' '}
+                                    {accomData.baths} {i18n.t('bath')}
+                                </Text>
                             </Text>
                         ) : null}
                         {accomData.beds ? (
                             <Text>
                                 {/* <FontAwesome5 name="bed" size={24} color="black" /> */}
-                                <FontAwesome name="bed" size={24} color="black" />
-                                <Text>   {accomData.beds} {i18n.t('bed')}</Text>                     
+                                <FontAwesome
+                                    name="bed"
+                                    size={24}
+                                    color="black"
+                                />
+                                <Text>
+                                    {' '}
+                                    {accomData.beds} {i18n.t('bed')}
+                                </Text>
                             </Text>
                         ) : null}
                         {accomData.livingRooms ? (
                             <Text>
-                                <FontAwesome6 name="couch" size={22} color="black" />
-                                <Text>   {accomData.livingRooms} {i18n.t('livRoom')}</Text>
+                                <FontAwesome6
+                                    name="couch"
+                                    size={22}
+                                    color="black"
+                                />
+                                <Text>
+                                    {' '}
+                                    {accomData.livingRooms} {i18n.t('livRoom')}
+                                </Text>
                             </Text>
                         ) : null}
                     </View>
 
                     {/* Description - API returns a html formatted string */}
                     <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>{i18n.t('desc')}</Text>    
+                        <Text style={styles.containerTitles}>
+                            {i18n.t('desc')}
+                        </Text>
                     </View>
                     <View style={[styles.center, styles.container]}>
-                        <View style={[styles.informationContainer, styles.shadow]}>
+                        <View
+                            style={[styles.informationContainer, styles.shadow]}
+                        >
                             <Text style={styles.descText}>
                                 {formatText(description)}
                             </Text>
@@ -310,13 +327,21 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         </View>
                     </View>
 
-
                     {/* Location */}
                     <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>{i18n.t('location')}</Text>
+                        <Text style={styles.containerTitles}>
+                            {i18n.t('location')}
+                        </Text>
                     </View>
 
-                    <View style={[styles.container, styles.twoRow, styles.informationContainer, styles.shadow]}>
+                    <View
+                        style={[
+                            styles.container,
+                            styles.twoRow,
+                            styles.informationContainer,
+                            styles.shadow,
+                        ]}
+                    >
                         <Text style={styles.rowText}>{accomData.address}</Text>
                         <Text style={styles.rowText}>
                             {accomData.postalCode}
@@ -325,11 +350,19 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
                     {/* Features */}
                     <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>{i18n.t('features')}</Text>
+                        <Text style={styles.containerTitles}>
+                            {i18n.t('features')}
+                        </Text>
                     </View>
 
                     {/* TODO - Translate Features */}
-                    <View style={[styles.container, styles.informationContainer, styles.shadow]}>
+                    <View
+                        style={[
+                            styles.container,
+                            styles.informationContainer,
+                            styles.shadow,
+                        ]}
+                    >
                         <View style={styles.facilityList}>
                             {accomData.features.map((feature, index) => {
                                 return (
@@ -346,20 +379,38 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
                     {/* Accessibility */}
                     <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>{i18n.t('accessibility')}</Text>
+                        <Text style={styles.containerTitles}>
+                            {i18n.t('accessibility')}
+                        </Text>
                     </View>
-                    <View style={[styles.container, styles.informationContainer, styles.shadow]}>
+                    <View
+                        style={[
+                            styles.container,
+                            styles.informationContainer,
+                            styles.shadow,
+                        ]}
+                    >
                         <Text>N/A</Text>
+                        {/* Add random accessibility text? */}
                     </View>
-
 
                     {/* Rating */}
                     <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>{i18n.t('rating')}</Text>
+                        <Text style={styles.containerTitles}>
+                            {i18n.t('rating')}
+                        </Text>
                     </View>
 
                     <View style={styles.ratingGroup}>
-                        <View style={[styles.container, styles.twoRow, styles.informationContainer, styles.shadow, styles.rating]}>
+                        <View
+                            style={[
+                                styles.container,
+                                styles.twoRow,
+                                styles.informationContainer,
+                                styles.shadow,
+                                styles.rating,
+                            ]}
+                        >
                             <Text style={[styles.ratingText, styles.twoRow]}>
                                 {`${randomRatings.avgRating}`}
                             </Text>
@@ -372,17 +423,30 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             </Text>
                         </View>
 
-                        <View style={[styles.container, styles.informationContainer, styles.shadow, styles.rating]}>
+                        <View
+                            style={[
+                                styles.container,
+                                styles.informationContainer,
+                                styles.shadow,
+                                styles.rating,
+                            ]}
+                        >
                             <View style={styles.twoRow}>
-                                <Text style={{fontWeight:'600'}}>{i18n.t('wifi')}</Text>
+                                <Text style={{ fontWeight: '600' }}>
+                                    {i18n.t('wifi')}
+                                </Text>
                                 <Text>{randomRatings.ratingsArr[0]}</Text>
                             </View>
                             <View style={styles.twoRow}>
-                                <Text style={{fontWeight:'600'}}>{i18n.t('location')}</Text>
+                                <Text style={{ fontWeight: '600' }}>
+                                    {i18n.t('location')}
+                                </Text>
                                 <Text>{randomRatings.ratingsArr[1]}</Text>
                             </View>
                             <View style={styles.twoRow}>
-                                <Text style={{fontWeight:'600'}}>{i18n.t('cleanliness')}</Text>
+                                <Text style={{ fontWeight: '600' }}>
+                                    {i18n.t('cleanliness')}
+                                </Text>
                                 <Text>{randomRatings.ratingsArr[2]}</Text>
                             </View>
                         </View>
@@ -399,7 +463,10 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         ]}
                     >
                         <View>
-                            <Image style={styles.profilePic} source={require('./images/profilePic.png')}></Image>
+                            <Image
+                                style={styles.profilePic}
+                                source={require('./images/profilePic.png')}
+                            ></Image>
                         </View>
                         <View style={styles.profileContainer}>
                             <Text style={styles.postBy}>
@@ -484,8 +551,8 @@ const styles = StyleSheet.create({
         // borderBottomColor: '#c7cacc',
         // borderBottomColor: '#0E0D0D',
         // borderBottomWidth: 1,
-        marginBottom:10,
-        marginTop:20,
+        marginBottom: 10,
+        marginTop: 20,
         // backgroundColor: 'green',
         // fontSize: 30,
         paddingLeft: 20,
@@ -524,7 +591,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         justifyContent: 'center',
         fontSize: 35,
-        fontWeight:'600',
+        fontWeight: '600',
     },
     star: {
         color: '#e8c31e',
@@ -595,28 +662,30 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         fontWeight: '500',
     },
-    shareBtn:{
+    shareBtn: {
         alignItems: 'center',
         justifyContent: 'center',
-        borderRadius:8,
-        paddingVertical:3,
-        backgroundColor:'white',
-        width:90,
-        bottom:280,
-        left:290,
+        borderRadius: 8,
+        paddingVertical: 3,
+        paddingHorizontal: 5,
+        backgroundColor: 'white',
+        // width: 90,
+        alignSelf: 'flex-start', // Makes width fit text content? hopefully
+        bottom: 280,
+        left: 290,
         flexDirection: 'row',
-        gap:7
+        gap: 7,
     },
-    shareTxt:{
-        fontSize:16,
-        letterSpacing:0.25,
-        lineHeight:21
+    shareTxt: {
+        fontSize: 16,
+        letterSpacing: 0.25,
+        lineHeight: 21,
     },
     shadow: {
         ...Platform.select({
             ios: {
                 shadowColor: '#171717',
-                shadowOffset: {width: 4, height: 6},
+                shadowOffset: { width: 4, height: 6 },
                 shadowOpacity: 0.2,
                 shadowRadius: 3,
             },
@@ -624,7 +693,7 @@ const styles = StyleSheet.create({
                 elevation: 7,
                 shadowColor: 'black',
             },
-        }), 
+        }),
     },
     slidesContainer: {
         width: Dimensions.get('screen').width,
@@ -652,7 +721,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-     // Probably should be a 'class'
+    // Probably should be a 'class'
     translateBtn: {
         backgroundColor: '#197bc6',
         padding: 7,
