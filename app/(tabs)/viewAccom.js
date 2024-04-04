@@ -516,12 +516,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
     },
     informationContainer: {
-        backgroundColor: '#C0C0C0',
+        backgroundColor: 'white',
         padding: 20,
         borderRadius: 13,
     },
     priceContainer: {
-        backgroundColor: '#C0C0C0',
+        backgroundColor: '#1e1e1e',
         marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
@@ -573,6 +573,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     price: {
+        color:'white',
         padding: 7,
         fontSize: 20,
         alignSelf: 'center',
@@ -728,8 +729,9 @@ const styles = StyleSheet.create({
     },
     // Probably should be a 'class'
     translateBtn: {
-        backgroundColor: '#197bc6',
-        padding: 7,
+        backgroundColor: '#1e1e1e',
+        borderRadius: 13,
+        padding: 10,
         margin: 5,
     },
 });
