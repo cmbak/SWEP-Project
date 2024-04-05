@@ -31,20 +31,11 @@ export default function TabLayout() {
                 }}
             />
             <Tabs.Screen
-                name="search"
+                name="accom"
                 options={{
                     title: 'Search',
                     tabBarIcon: ({ color }) => (
                         <FontAwesome size={28} name="search" color={color} />
-                    ),
-                }}
-            />
-            <Tabs.Screen
-                name="viewAccom"
-                options={{
-                    title: 'View Accom',
-                    tabBarIcon: ({ color }) => (
-                        <FontAwesome size={28} name="home" color={color} />
                     ),
                 }}
             />
