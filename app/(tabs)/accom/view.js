@@ -46,8 +46,14 @@ Accommodation
 export default function viewAccom() {
     const i18n = new I18n(translations);
     const localParams = useLocalSearchParams();
-    // const propertyId = localParams.id;
-    // const listing = localParams.listing;
+    console.log('in view');
+    console.log(localParams.listing);
+    console.log(JSON.stringify(localParams.listing));
+    console.log(JSON.stringify(localParams.listing.images));
+    // console.log(JSON.parse(localParams.listing));
+    console.log(JSON.parse(JSON.stringify(localParams.listing)));
+    // const listing = JSON.parse(localParams.listing);
+    const listing = JSON.parse(localParams.listing);
     const {
         id,
         name,
@@ -55,48 +61,30 @@ export default function viewAccom() {
         address,
         baths,
         beds,
+        images,
+        features,
         livingRooms,
         price,
         agentName,
         agentPhone,
         availableFrom,
-        listing,
-    } = localParams;
+    } = listing;
 
-    const features = JSON.stringify(listing.features);
-    const images = JSON.stringify(listing.images);
+    console.log(availableFrom);
 
     const randomRatings = new RandomRatings(3);
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
-    // const [accomData, setAccomData] = useState(localParams.listing);
-    const appState = useRef(AppState.currentState); // I have no idea if this works
-    const [originalDesc, setOriginalDesc] = useState(localParams.description);
+    // const [accomData, setAccomData] = useState(localParams.listing); -- use listing (see above) if need 'accomData'
+    const appState = useRef(AppState.currentState); // See android thing
+    const [originalDesc, setOriginalDesc] = useState(listing.description);
     const [translatedDesc, setTranslatedDesc] = useState('');
-    const [description, setDescription] = useState(localParams.description);
+    const [description, setDescription] = useState(listing.description);
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
     } else {
         i18n.locale = 'en';
     }
-
-    console.log(`listing`);
-    console.log(localParams.listing);
-    console.log('listing2');
-    console.log(localParams.listing2);
-
-    console.log(localParams);
-    console.log(useLocalSearchParams().id);
-    console.log(typeof useLocalSearchParams().features);
-    console.log('features');
-    console.log(features);
-    console.log(`features is undefined ${features === undefined}`);
-    console.log(images);
-    // console.log(accomData);
-    // console.log(description);
-    // console.log(localParams.description);
-    // console.log(description);
-    // console.log(JSON.stringify(localParams.listing));
 
     // const fetchData = async () => {
     //     const options = {

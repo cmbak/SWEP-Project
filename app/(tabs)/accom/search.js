@@ -127,10 +127,14 @@ export default function search() {
     // }
 
     useEffect(() => {
-        if (listingDetailed.length > 0)
-            console.log(
-                JSON.parse(listingDetailed[listingDetailed.length - 1])
-            );
+        if (listingDetailed.length > 0) {
+            const t = listingDetailed[listingDetailed.length - 1];
+            console.log(t);
+            console.log(typeof t);
+            // console.log(JSON.stringify(t));
+            // console.log(JSON.parse(t));
+            // console.log(JSON.parse(JSON.stringify(t)));
+        }
     }, [listingDetailed]);
 
     return (
@@ -234,7 +238,7 @@ export default function search() {
                                 {'\n'}
                             </Text>
                             <Text></Text>
-                            <Link
+                            {/* <Link
                                 href={{
                                     pathname: '/accom/view',
                                     params: {
@@ -256,10 +260,21 @@ export default function search() {
                                         listing: JSON.stringify(listing),
                                         listing2: listing,
                                     },
-                                }}
+                                }} asChild
+                            > */}
+                            <Pressable
+                                onPress={() =>
+                                    router.push({
+                                        pathname: '/accom/view',
+                                        params: {
+                                            listing: JSON.stringify(listing),
+                                        },
+                                    })
+                                }
                             >
-                                View Accommodation Listing
-                            </Link>
+                                <Text>View Accommodation Listing</Text>
+                            </Pressable>
+                            {/* </Link> */}
                             {/* <Pressable
                                 onPress={() => {
                                     router.push({
