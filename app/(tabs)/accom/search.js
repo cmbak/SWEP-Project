@@ -12,7 +12,7 @@ import Slider from '@react-native-community/slider';
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import { key } from '../../../apiKey';
-import { Link, useNavigation } from 'expo-router';
+import { Link, useRouter } from 'expo-router';
 import { router } from 'expo-router';
 
 export default function search() {
@@ -24,12 +24,7 @@ export default function search() {
     const [maxBeds, setMaxBeds] = useState('');
     const [minBeds, setMinBeds] = useState('');
     const [isFilterVisible, setIsFilterVisible] = useState(false);
-    const navigation = useNavigation();
-
-    // Set stack options
-    useEffect(() => {
-        navigation.setOptions({ title: 'Search', headerShown: false });
-    }, [navigation]);
+    // const router = useRouter();
 
     const handleInputChange = (text) => {
         setSearchInput(text);
@@ -139,12 +134,6 @@ export default function search() {
             // console.log(JSON.stringify(t));
             // console.log(JSON.parse(t));
             // console.log(JSON.parse(JSON.stringify(t)));
-            console.log(
-                `length of listings details: ${JSON.stringify(
-                    listingDetailed.length
-                )}`
-            );
-            console.log(JSON.stringify(listingDetailed));
         }
     }, [listingDetailed]);
 
@@ -230,7 +219,7 @@ export default function search() {
             <View style={styles.searchResults}>
                 {listings &&
                     listingDetailed.length === listings.length &&
-                    listingDetailed.map((listing, index) => (
+                    listingDetailed.map((listing) => (
                         <View style={styles.propertyOverview} key={listing.id}>
                             <Image
                                 source={{ uri: listing.images[0] }}
@@ -249,34 +238,67 @@ export default function search() {
                                 {'\n'}
                             </Text>
                             <Text></Text>
+                            {/* <Link
+                                href={{
+                                    pathname: '/accom/view',
+                                    params: {
+                                        test: 'TEST',
+                                        id: listing.id,
+                                        description: listing.description,
+                                        name: listing.name,
+                                        postalCode: listing.postalCode,
+                                        address: listing.address,
+                                        baths: listing.baths,
+                                        beds: listing.beds,
+                                        livingRooms: listing.livingRooms,
+                                        price: listing.price,
+                                        images: listing.images,
+                                        features: listing.features,
+                                        agentName: listing.agentName,
+                                        agentPhone: listing.agentPhone,
+                                        availableFrom: listing.availableFrom,
+                                        listing: JSON.stringify(listing),
+                                        listing2: listing,
+                                    },
+                                }} asChild
+                            > */}
                             <Pressable
                                 onPress={() =>
                                     router.push({
                                         pathname: '/accom/view',
                                         params: {
                                             listing: JSON.stringify(listing),
-                                            description: listing.description,
-                                            id: listing.id,
-                                            name: listing.name,
-                                            postalCode: listing.postalCode,
-                                            address: listing.address,
-                                            baths: listing.baths,
-                                            beds: listing.beds,
-                                            images: listing.images,
-                                            features: listing.features,
-                                            livingRooms: listing.livingRooms,
-                                            price: listing.price,
-                                            agentName: listing.agentName,
-                                            agentPhone: listing.agentPhone,
-                                            availableFrom:
-                                                listing.availableFrom,
                                         },
                                     })
                                 }
                             >
                                 <Text>View Accommodation Listing</Text>
-                                {/* <Text>{JSON.stringify(listingDetailed)}</Text> */}
                             </Pressable>
+                            {/* </Link> */}
+                            {/* <Pressable
+                                onPress={() => {
+                                    router.push({
+                                        pathname: '/viewAccom',
+                                        // params: { id: listing.id },
+                                    });
+                                }}
+                            >
+                                <Text>View Accommodation Listing</Text>
+                            </Pressable> */}
+                            {/* <Link
+                                href={{
+                                    pathname: '/viewAccom',
+                                    params: { id: listing.id },
+                                }}
+                                asChild
+                                // onPress={() => router.push('/viewAccom')}
+                            >
+                                <TouchableOpacity>
+                                    <Text style={{ color: 'red' }}>
+                                        View Accommodation Listing
+                                    </Text>
+                                </TouchableOpacity>
+                            </Link> */}
                         </View>
                     ))}
             </View>

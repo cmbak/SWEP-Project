@@ -25,7 +25,7 @@ import { I18n } from 'i18n-js';
 import { translations } from '../../../localizations';
 import { RandomRatings } from '../../../randomRatings';
 import { exampleResult } from '../../../exampleListing1';
-import { useLocalSearchParams, useNavigation } from 'expo-router';
+import { useLocalSearchParams } from 'expo-router';
 
 /*
 Accommodation
@@ -45,28 +45,15 @@ Accommodation
 
 export default function viewAccom() {
     const i18n = new I18n(translations);
-    const navigation = useNavigation();
     const localParams = useLocalSearchParams();
-
     console.log('in view');
-    const l = localParams.listing;
-    // console.log(l);
-    console.log(localParams);
-
-    // console.log(JSON.parse(l));
-    // console.log(JSON.stringify(l));
-
-    // console.log(JSON.parse(JSON.stringify(l)));
-
-    // try {
-    //     const listing = JSON.parse(localParams.listing);
-    // } catch (e) {
-    //     console.log('an error occurred');
-    //     console.log(e);
-    //     // Go back?
-    // }
+    console.log(localParams.listing);
+    console.log(JSON.stringify(localParams.listing));
+    console.log(JSON.stringify(localParams.listing.images));
+    // console.log(JSON.parse(localParams.listing));
+    console.log(JSON.parse(JSON.stringify(localParams.listing)));
     // const listing = JSON.parse(localParams.listing);
-
+    const listing = JSON.parse(localParams.listing);
     const {
         id,
         name,
@@ -81,58 +68,23 @@ export default function viewAccom() {
         agentName,
         agentPhone,
         availableFrom,
-    } = localParams;
+    } = listing;
 
-    console.log(availableFrom); // Check that dates are correct
-    console.log(features);
+    console.log(availableFrom);
 
     const randomRatings = new RandomRatings(3);
-    // const [listing, setListing] = useState(JSON.parse(localParams.listing));
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
     // const [accomData, setAccomData] = useState(localParams.listing); -- use listing (see above) if need 'accomData'
     const appState = useRef(AppState.currentState); // See android thing
-    const [originalDesc, setOriginalDesc] = useState(localParams.description);
+    const [originalDesc, setOriginalDesc] = useState(listing.description);
     const [translatedDesc, setTranslatedDesc] = useState('');
-    const [description, setDescription] = useState(localParams.description);
-    const [listing, setListing] = useState(null);
-    // if (localParams.listing === undefined) {
-
-    // }
+    const [description, setDescription] = useState(listing.description);
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
     } else {
         i18n.locale = 'en';
     }
-
-    useEffect(() => {
-        navigation.setOptions({
-            title: 'Viewing Accommodation',
-            hideWhenScrolling: true,
-        });
-    }, [navigation]);
-
-    // useEffect(() => {
-    //     if (listing !== undefined) {
-    //         // const listing = JSON.parse(localParams.listing);
-
-    //         const {
-    //             id,
-    //             name,
-    //             postalCode,
-    //             address,
-    //             baths,
-    //             beds,
-    //             images,
-    //             features,
-    //             livingRooms,
-    //             price,
-    //             agentName,
-    //             agentPhone,
-    //             availableFrom,
-    //         } = listing;
-    //     }
-    // }, [listing])
 
     // const fetchData = async () => {
     //     const options = {
@@ -305,7 +257,7 @@ export default function viewAccom() {
 
     return (
         <SafeAreaView>
-            {listing !== undefined ? (
+            {id ? (
                 <ScrollView>
                     <View>
                         {Slider()}
@@ -353,6 +305,7 @@ export default function viewAccom() {
                         ) : null}
                         {beds ? (
                             <Text>
+                                {/* <FontAwesome5 name="bed" size={24} color="black" /> */}
                                 <FontAwesome
                                     name="bed"
                                     size={24}
@@ -430,10 +383,8 @@ export default function viewAccom() {
                         <Text style={styles.rowText}>{postalCode}</Text>
                     </View>
 
-                    {/* Features  - only display if there are features!*/}
-                    {features !== null &&
-                    features !== undefined &&
-                    features.length > 0 ? (
+                    {/* Features  - only display if there are features and they're not undefined!*/}
+                    {features !== undefined && features ? (
                         <View style={[styles.horizLine, styles.container]}>
                             <Text style={styles.containerTitles}>
                                 {i18n.t('features')}
@@ -442,9 +393,7 @@ export default function viewAccom() {
                     ) : null}
 
                     {/* TODO - Translate Features */}
-                    {features &&
-                    features !== undefined &&
-                    features.length > 0 ? (
+                    {features !== undefined && features ? (
                         <View
                             style={[
                                 styles.container,
