@@ -57,12 +57,14 @@ export default function viewAccom() {
         beds,
         livingRooms,
         price,
-        images,
-        features,
         agentName,
         agentPhone,
         availableFrom,
+        listing,
     } = localParams;
+
+    const features = JSON.stringify(listing.features);
+    const images = JSON.stringify(listing.images);
 
     const randomRatings = new RandomRatings(3);
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
@@ -85,6 +87,11 @@ export default function viewAccom() {
 
     console.log(localParams);
     console.log(useLocalSearchParams().id);
+    console.log(typeof useLocalSearchParams().features);
+    console.log('features');
+    console.log(features);
+    console.log(`features is undefined ${features === undefined}`);
+    console.log(images);
     // console.log(accomData);
     // console.log(description);
     // console.log(localParams.description);
@@ -388,36 +395,38 @@ export default function viewAccom() {
                         <Text style={styles.rowText}>{postalCode}</Text>
                     </View>
 
-                    {/* Features */}
-                    <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>
-                            {i18n.t('features')}
-                        </Text>
-                    </View>
+                    {/* Features  - only display if there are features and they're not undefined!*/}
+                    {features !== undefined && features ? (
+                        <View style={[styles.horizLine, styles.container]}>
+                            <Text style={styles.containerTitles}>
+                                {i18n.t('features')}
+                            </Text>
+                        </View>
+                    ) : null}
 
                     {/* TODO - Translate Features */}
-                    <View
-                        style={[
-                            styles.container,
-                            styles.informationContainer,
-                            styles.shadow,
-                        ]}
-                    >
-                        <View style={styles.facilityList}>
-                            {features && features.length > 0
-                                ? features.map((feature, index) => {
-                                      return (
-                                          <Text
-                                              key={index}
-                                              style={styles.facilityText}
-                                          >
-                                              {formatText(feature)}
-                                          </Text>
-                                      );
-                                  })
-                                : null}
+                    {features !== undefined && features ? (
+                        <View
+                            style={[
+                                styles.container,
+                                styles.informationContainer,
+                                styles.shadow,
+                            ]}
+                        >
+                            <View style={styles.facilityList}>
+                                {features.map((feature, index) => {
+                                    return (
+                                        <Text
+                                            key={index}
+                                            style={styles.facilityText}
+                                        >
+                                            {formatText(feature)}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
                         </View>
-                    </View>
+                    ) : null}
 
                     {/* Accessibility */}
                     <View style={[styles.horizLine, styles.container]}>

@@ -110,6 +110,8 @@ export default function search() {
                             response1.data.data,
                         ]);
                         console.log(response1.data, 'in the loop:', i);
+                        // console.log(`listings length ${listings.length}`);
+                        // console.log(listingDetailed);
                     }
                     console.log(listingDetailed, 'outside loop');
                 } catch (error) {
@@ -123,6 +125,13 @@ export default function search() {
     // if (!listings){
     //     return(<Text>loading listings data</Text>)
     // }
+
+    useEffect(() => {
+        if (listingDetailed.length > 0)
+            console.log(
+                JSON.parse(listingDetailed[listingDetailed.length - 1])
+            );
+    }, [listingDetailed]);
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
@@ -205,7 +214,7 @@ export default function search() {
             <Text>hello worlds</Text>
             <View style={styles.searchResults}>
                 {listings &&
-                    listingDetailed.length == listings.length &&
+                    listingDetailed.length === listings.length &&
                     listingDetailed.map((listing) => (
                         <View style={styles.propertyOverview} key={listing.id}>
                             <Image
@@ -227,7 +236,7 @@ export default function search() {
                             <Text></Text>
                             <Link
                                 href={{
-                                    pathname: 'view',
+                                    pathname: '/accom/view',
                                     params: {
                                         test: 'TEST',
                                         id: listing.id,
