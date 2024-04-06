@@ -4,7 +4,7 @@ export default function Layout() {
     return (
         <Stack initialRouteName="search">
             <Stack.Screen name="search" />
-            {/* <Stack.Screen name="view" /> */}
+            <Stack.Screen name="view" initialParams={{ features: null }} />
         </Stack>
     );
 }

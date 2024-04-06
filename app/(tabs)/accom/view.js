@@ -25,7 +25,7 @@ import { I18n } from 'i18n-js';
 import { translations } from '../../../localizations';
 import { RandomRatings } from '../../../randomRatings';
 import { exampleResult } from '../../../exampleListing1';
-import { useLocalSearchParams } from 'expo-router';
+import { useLocalSearchParams, router } from 'expo-router';
 
 /*
 Accommodation
@@ -47,38 +47,32 @@ export default function viewAccom() {
     const i18n = new I18n(translations);
     const localParams = useLocalSearchParams();
     console.log('in view');
+    // console.log(localParams);
+    // console.log(router.param)
     console.log(localParams.listing);
-    console.log(JSON.stringify(localParams.listing));
-    console.log(JSON.stringify(localParams.listing.images));
+    console.log(localParams.id);
+    // console.log(JSON.stringify(localParams.images));
+    // console.log(JSON.parse(localParams.images));
+    console.log(localParams.features);
+    // console.log(JSON.stringify(localParams.listing));
     // console.log(JSON.parse(localParams.listing));
-    console.log(JSON.parse(JSON.stringify(localParams.listing)));
+    // console.log(JSON.stringify(localParams.listing.images));
+    // console.log(JSON.parse(localParams.listing));
+    // console.log(JSON.parse(JSON.stringify(localParams.listing)));
     // const listing = JSON.parse(localParams.listing);
-    const listing = JSON.parse(localParams.listing);
-    const {
-        id,
-        name,
-        postalCode,
-        address,
-        baths,
-        beds,
-        images,
-        features,
-        livingRooms,
-        price,
-        agentName,
-        agentPhone,
-        availableFrom,
-    } = listing;
+    const listing = localParams.listing;
 
-    console.log(availableFrom);
+    // console.log(availableFrom);
+    console.log();
 
     const randomRatings = new RandomRatings(3);
+    const [accomData, setAccomData] = useState(null);
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
     // const [accomData, setAccomData] = useState(localParams.listing); -- use listing (see above) if need 'accomData'
     const appState = useRef(AppState.currentState); // See android thing
-    const [originalDesc, setOriginalDesc] = useState(listing.description);
+    const [originalDesc, setOriginalDesc] = useState(null);
     const [translatedDesc, setTranslatedDesc] = useState('');
-    const [description, setDescription] = useState(listing.description);
+    const [description, setDescription] = useState(null);
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
@@ -86,24 +80,38 @@ export default function viewAccom() {
         i18n.locale = 'en';
     }
 
-    // const fetchData = async () => {
-    //     const options = {
-    //         method: 'GET',
-    //         url: `https://zoopla4.p.rapidapi.com/properties/${propertyId}`,
-    //         headers: {
-    //             'X-RapidAPI-Key': key,
-    //             'X-RapidAPI-Host': host,
-    //         },
-    //     };
+    // if (listing !== undefined) {
+    //     setAccomData(JSON.stringify(localParams.listing));
+    //     setOriginalDesc(listing.description);
+    //     setDescription(listing.description);
+    // } else {
+    //     fetchData();
+    // }
 
-    //     try {
-    //         const response = await axios.request(options);
-    //         setAccomData(response.data.data);
-    //         console.log(response.data.data);
-    //     } catch (error) {
-    //         console.error(error);
-    //     }
-    // };
+    const fetchData = async () => {
+        const options = {
+            method: 'GET',
+            url: `https://zoopla4.p.rapidapi.com/properties/${localParams.id}`,
+            headers: {
+                'X-RapidAPI-Key': key,
+                'X-RapidAPI-Host': host,
+            },
+        };
+
+        try {
+            const response = await axios.request(options);
+            setAccomData(response.data.data);
+            setOriginalDesc(response.data.data.description);
+            setDescription(response.data.data.description);
+            console.log(response.data.data);
+        } catch (error) {
+            console.error(error);
+        }
+    };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     const { width, height } = Dimensions.get('screen');
 
@@ -167,7 +175,7 @@ export default function viewAccom() {
         return (
             <View>
                 <FlatList
-                    data={images}
+                    data={accomData.images}
                     renderItem={({ item }) => <SlideItem item={item} />}
                     horizontal
                     pagingEnabled
@@ -180,7 +188,7 @@ export default function viewAccom() {
                         <Text style={styles.shareTxt}>{i18n.t('share')}</Text>
                     </TouchableOpacity>
                 </View>
-                <Pagination data={images} scrollX={scrollX} />
+                <Pagination data={accomData.images} scrollX={scrollX} />
             </View>
         );
     };
@@ -257,10 +265,10 @@ export default function viewAccom() {
 
     return (
         <SafeAreaView>
-            {id ? (
+            {accomData ? (
                 <ScrollView>
                     <View>
-                        {Slider()}
+                        <Slider />
                         <View
                             style={[
                                 styles.titleGroup,
@@ -269,10 +277,12 @@ export default function viewAccom() {
                             ]}
                         >
                             <View>
-                                <Text style={styles.accomTitle}>{name}</Text>
+                                <Text style={styles.accomTitle}>
+                                    {accomData.name}
+                                </Text>
                                 <Text style={styles.datePosted}>
                                     {`${i18n.t('available')} ${formatDate(
-                                        availableFrom
+                                        accomData.availableFrom
                                     )}`}
                                 </Text>
                             </View>
@@ -280,7 +290,7 @@ export default function viewAccom() {
                                 style={[styles.priceContainer, styles.shadow]}
                             >
                                 <Text style={styles.price}>
-                                    {`£${price}/${i18n.t('month')}`}
+                                    {`£${accomData.price}/${i18n.t('month')}`}
                                 </Text>
                             </View>
                         </View>
@@ -289,7 +299,7 @@ export default function viewAccom() {
 
                     {/* Beds, baths + living rooms - only render if all three aren't null?*/}
                     <View style={[styles.container, styles.center, styles.row]}>
-                        {baths ? (
+                        {accomData.baths ? (
                             <Text>
                                 <FontAwesome
                                     name="bathtub"
@@ -299,11 +309,11 @@ export default function viewAccom() {
                                 {/* TODO PLURAL TRANSLATION? */}
                                 <Text>
                                     {' '}
-                                    {baths} {i18n.t('bath')}
+                                    {accomData.baths} {i18n.t('bath')}
                                 </Text>
                             </Text>
                         ) : null}
-                        {beds ? (
+                        {accomData.beds ? (
                             <Text>
                                 {/* <FontAwesome5 name="bed" size={24} color="black" /> */}
                                 <FontAwesome
@@ -313,11 +323,11 @@ export default function viewAccom() {
                                 />
                                 <Text>
                                     {' '}
-                                    {beds} {i18n.t('bed')}
+                                    {accomData.beds} {i18n.t('bed')}
                                 </Text>
                             </Text>
                         ) : null}
-                        {livingRooms ? (
+                        {accomData.livingRooms ? (
                             <Text>
                                 <FontAwesome6
                                     name="couch"
@@ -326,7 +336,7 @@ export default function viewAccom() {
                                 />
                                 <Text>
                                     {' '}
-                                    {livingRooms} {i18n.t('livRoom')}
+                                    {accomData.livingRooms} {i18n.t('livRoom')}
                                 </Text>
                             </Text>
                         ) : null}
@@ -379,12 +389,16 @@ export default function viewAccom() {
                             styles.shadow,
                         ]}
                     >
-                        <Text style={styles.rowText}>{address}</Text>
-                        <Text style={styles.rowText}>{postalCode}</Text>
+                        <Text style={styles.rowText}>{accomData.address}</Text>
+                        <Text style={styles.rowText}>
+                            {accomData.postalCode}
+                        </Text>
                     </View>
 
                     {/* Features  - only display if there are features and they're not undefined!*/}
-                    {features !== undefined && features ? (
+                    {accomData.features !== undefined &&
+                    accomData.features &&
+                    accomData.features.length > 0 ? (
                         <View style={[styles.horizLine, styles.container]}>
                             <Text style={styles.containerTitles}>
                                 {i18n.t('features')}
@@ -393,7 +407,9 @@ export default function viewAccom() {
                     ) : null}
 
                     {/* TODO - Translate Features */}
-                    {features !== undefined && features ? (
+                    {accomData.features !== undefined &&
+                    accomData.features &&
+                    accomData.features.length > 0 ? (
                         <View
                             style={[
                                 styles.container,
@@ -402,7 +418,7 @@ export default function viewAccom() {
                             ]}
                         >
                             <View style={styles.facilityList}>
-                                {features.map((feature, index) => {
+                                {accomData.features.map((feature, index) => {
                                     return (
                                         <Text
                                             key={index}
@@ -511,8 +527,12 @@ export default function viewAccom() {
                             <Text style={styles.postBy}>
                                 {i18n.t('posted')}
                             </Text>
-                            <Text style={styles.profileName}>{agentName}</Text>
-                            <Text style={styles.phoneNumber}>{agentPhone}</Text>
+                            <Text style={styles.profileName}>
+                                {accomData.agentName}
+                            </Text>
+                            <Text style={styles.phoneNumber}>
+                                {accomData.agentPhone}
+                            </Text>
                             <TouchableOpacity style={styles.msgBtn}>
                                 <Text style={styles.msgTxt}>
                                     {i18n.t('message')}

@@ -126,17 +126,6 @@ export default function search() {
     //     return(<Text>loading listings data</Text>)
     // }
 
-    useEffect(() => {
-        if (listingDetailed.length > 0) {
-            const t = listingDetailed[listingDetailed.length - 1];
-            console.log(t);
-            console.log(typeof t);
-            // console.log(JSON.stringify(t));
-            // console.log(JSON.parse(t));
-            // console.log(JSON.parse(JSON.stringify(t)));
-        }
-    }, [listingDetailed]);
-
     return (
         <ScrollView contentContainerStyle={styles.container}>
             <Link href={{ pathname: '/accom/view' }}>test</Link>
@@ -268,6 +257,8 @@ export default function search() {
                                         pathname: '/accom/view',
                                         params: {
                                             listing: JSON.stringify(listing),
+                                            images: listing.image,
+                                            id: listing.id,
                                         },
                                     })
                                 }
