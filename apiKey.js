@@ -1,4 +1,4 @@
 module.exports = {
-    key: '37439e4e1emsh83e1f68b1889406p14970cjsnf4d915e0d123',
+    key: 'b6bd9f4f2amsh2dc1fa0a70ac69fp1fa20djsne3a8bcda4e4b',
     host: 'zoopla4.p.rapidapi.com',
 };
