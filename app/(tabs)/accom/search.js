@@ -86,9 +86,6 @@ export default function search() {
         } catch (error) {
             console.error(error);
         }
-
-        // setListings(exampleSearch.data);
-        // console.log('set listings hopefully');
     };
     useEffect(() => {
         const fetchData = async () => {
@@ -128,7 +125,6 @@ export default function search() {
 
     return (
         <ScrollView contentContainerStyle={styles.container}>
-            <Link href={{ pathname: '/accom/view' }}>test</Link>
             <TextInput
                 style={styles.input}
                 placeholder="Search properties"
@@ -226,38 +222,12 @@ export default function search() {
                                 {listing.address}
                                 {'\n'}
                             </Text>
-                            <Text></Text>
-                            {/* <Link
-                                href={{
-                                    pathname: '/accom/view',
-                                    params: {
-                                        test: 'TEST',
-                                        id: listing.id,
-                                        description: listing.description,
-                                        name: listing.name,
-                                        postalCode: listing.postalCode,
-                                        address: listing.address,
-                                        baths: listing.baths,
-                                        beds: listing.beds,
-                                        livingRooms: listing.livingRooms,
-                                        price: listing.price,
-                                        images: listing.images,
-                                        features: listing.features,
-                                        agentName: listing.agentName,
-                                        agentPhone: listing.agentPhone,
-                                        availableFrom: listing.availableFrom,
-                                        listing: JSON.stringify(listing),
-                                        listing2: listing,
-                                    },
-                                }} asChild
-                            > */}
                             <Pressable
                                 onPress={() =>
                                     router.push({
                                         pathname: '/accom/view',
                                         params: {
-                                            listing: JSON.stringify(listing),
-                                            images: listing.image,
+                                            listing: listing,
                                             id: listing.id,
                                         },
                                     })
@@ -265,31 +235,6 @@ export default function search() {
                             >
                                 <Text>View Accommodation Listing</Text>
                             </Pressable>
-                            {/* </Link> */}
-                            {/* <Pressable
-                                onPress={() => {
-                                    router.push({
-                                        pathname: '/viewAccom',
-                                        // params: { id: listing.id },
-                                    });
-                                }}
-                            >
-                                <Text>View Accommodation Listing</Text>
-                            </Pressable> */}
-                            {/* <Link
-                                href={{
-                                    pathname: '/viewAccom',
-                                    params: { id: listing.id },
-                                }}
-                                asChild
-                                // onPress={() => router.push('/viewAccom')}
-                            >
-                                <TouchableOpacity>
-                                    <Text style={{ color: 'red' }}>
-                                        View Accommodation Listing
-                                    </Text>
-                                </TouchableOpacity>
-                            </Link> */}
                         </View>
                     ))}
             </View>

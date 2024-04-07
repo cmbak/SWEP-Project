@@ -24,7 +24,6 @@ import translate from 'google-translate-api-x';
 import { I18n } from 'i18n-js';
 import { translations } from '../../../localizations';
 import { RandomRatings } from '../../../randomRatings';
-import { exampleResult } from '../../../exampleListing1';
 import { useLocalSearchParams, router } from 'expo-router';
 
 /*
@@ -47,28 +46,17 @@ export default function viewAccom() {
     const i18n = new I18n(translations);
     const localParams = useLocalSearchParams();
     console.log('in view');
-    // console.log(localParams);
-    // console.log(router.param)
-    console.log(localParams.listing);
-    console.log(localParams.id);
-    // console.log(JSON.stringify(localParams.images));
-    // console.log(JSON.parse(localParams.images));
-    console.log(localParams.features);
-    // console.log(JSON.stringify(localParams.listing));
-    // console.log(JSON.parse(localParams.listing));
-    // console.log(JSON.stringify(localParams.listing.images));
-    // console.log(JSON.parse(localParams.listing));
-    // console.log(JSON.parse(JSON.stringify(localParams.listing)));
-    // const listing = JSON.parse(localParams.listing);
-    const listing = localParams.listing;
-
-    // console.log(availableFrom);
-    console.log();
+    console.log(localParams); // sometimes listing and id are undefined?
+    // console.log(localParams.listing);
+    // // console.log(JSON.stringify(localParams.listing))
+    // console.log(localParams.id); // Sometimes this gets undefined?
+    // console.log(localParams.images);
+    // // console.log(localParams.parseImg);
+    // console.log(localParams.stringImg);
 
     const randomRatings = new RandomRatings(3);
     const [accomData, setAccomData] = useState(null);
     const [locale, setLocale] = useState(getLocales()[0].languageCode);
-    // const [accomData, setAccomData] = useState(localParams.listing); -- use listing (see above) if need 'accomData'
     const appState = useRef(AppState.currentState); // See android thing
     const [originalDesc, setOriginalDesc] = useState(null);
     const [translatedDesc, setTranslatedDesc] = useState('');
@@ -79,14 +67,6 @@ export default function viewAccom() {
     } else {
         i18n.locale = 'en';
     }
-
-    // if (listing !== undefined) {
-    //     setAccomData(JSON.stringify(localParams.listing));
-    //     setOriginalDesc(listing.description);
-    //     setDescription(listing.description);
-    // } else {
-    //     fetchData();
-    // }
 
     const fetchData = async () => {
         const options = {
@@ -193,11 +173,7 @@ export default function viewAccom() {
         );
     };
 
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
-
-    // For locale update on android
+    // For localization update on android
     useEffect(() => {
         console.log(getLocales()[0].languageCode);
         // Localization only changes in Android (in iOS the app is restarted) and
