@@ -79,7 +79,7 @@ export default function viewAccom() {
         };
 
         try {
-            const response = await axios.request(options);
+            response = await axios.request(options);
             setAccomData(response.data.data);
             setOriginalDesc(response.data.data.description);
             setDescription(response.data.data.description);
@@ -204,10 +204,10 @@ export default function viewAccom() {
 
     // For sharing a listing
     const shareFunc = async (id) => {
-        
+                
                 try {
                   await Share.share({
-                    message: "Hey there! 🏠 Found an amazing flat listing that might just be what you're looking for! Check it out here:\n\n" + "exp://192.168.0.9:8081/--/accom/view/?id="+ localParams.id,
+                    message: "Hey there! 🏠 Found an amazing flat listing that might just be what you're looking for! Check it out here:\n\n" + response.data.data.url,
                   });
                 } catch (error) {
                   alert(error.message);
