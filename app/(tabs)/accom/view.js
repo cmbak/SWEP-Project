@@ -18,13 +18,13 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import { FontAwesome6 } from '@expo/vector-icons';
 import { SafeAreaView, useSafeAreaFrame } from 'react-native-safe-area-context';
 import axios from 'axios';
-import { key, host } from '../../apiKey';
+import { key, host } from '../../../apiKey';
 import { getLocales } from 'expo-localization';
 import translate from 'google-translate-api-x';
 import { I18n } from 'i18n-js';
-import { translations } from '../../localizations';
-import { RandomRatings } from '../../randomRatings';
-import { exampleResult } from '../../exampleListing1';
+import { translations } from '../../../localizations';
+import { RandomRatings } from '../../../randomRatings';
+import { useLocalSearchParams, router } from 'expo-router';
 
 /*
 Accommodation
@@ -40,17 +40,27 @@ Accommodation
 */
 
 /* Could add Scrollable Reviews */
+// 51836428
 
-export default function viewAccom({ propertyId = 51836428 }) {
+export default function viewAccom() {
     const i18n = new I18n(translations);
-    const [locale, setLocale] = useState(getLocales()[0].languageCode);
-    const [accomData, setAccomData] = useState(exampleResult);
-    const appState = useRef(AppState.currentState); // I have no idea if this works
-    const [originalDesc, setOriginalDesc] = useState(exampleResult.description);
-    const [translatedDesc, setTranslatedDesc] = useState('');
-    const [description, setDescription] = useState(originalDesc);
+    const localParams = useLocalSearchParams();
+    console.log('in view');
+    console.log(localParams); // sometimes listing and id are undefined?
+    // console.log(localParams.listing);
+    // // console.log(JSON.stringify(localParams.listing))
+    // console.log(localParams.id); // Sometimes this gets undefined?
+    // console.log(localParams.images);
+    // // console.log(localParams.parseImg);
+    // console.log(localParams.stringImg);
 
     const randomRatings = new RandomRatings(3);
+    const [accomData, setAccomData] = useState(null);
+    const [locale, setLocale] = useState(getLocales()[0].languageCode);
+    const appState = useRef(AppState.currentState); // See android thing
+    const [originalDesc, setOriginalDesc] = useState(null);
+    const [translatedDesc, setTranslatedDesc] = useState('');
+    const [description, setDescription] = useState(null);
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
@@ -61,7 +71,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
     const fetchData = async () => {
         const options = {
             method: 'GET',
-            url: `https://zoopla4.p.rapidapi.com/properties/${propertyId}`,
+            url: `https://zoopla4.p.rapidapi.com/properties/${localParams.id}`,
             headers: {
                 'X-RapidAPI-Key': key,
                 'X-RapidAPI-Host': host,
@@ -71,37 +81,47 @@ export default function viewAccom({ propertyId = 51836428 }) {
         try {
             const response = await axios.request(options);
             setAccomData(response.data.data);
+            setOriginalDesc(response.data.data.description);
+            setDescription(response.data.data.description);
             console.log(response.data.data);
         } catch (error) {
             console.error(error);
         }
     };
 
+    useEffect(() => {
+        if (localParams.id !== undefined) {
+            fetchData();
+        }
+    }, []);
+
     const { width, height } = Dimensions.get('screen');
 
     const Pagination = ({ data, scrollX }) => {
         return (
             <View style={styles.dotContainer}>
-                {data.map((_, idx) => {
-                    const inputRange = [
-                        (idx - 1) * width,
-                        idx * width,
-                        (idx + 1) * width,
-                    ];
+                {data && data.length > 0
+                    ? data.map((_, idx) => {
+                          const inputRange = [
+                              (idx - 1) * width,
+                              idx * width,
+                              (idx + 1) * width,
+                          ];
 
-                    const dotWidth = scrollX.interpolate({
-                        inputRange,
-                        outputRange: [12, 20, 12],
-                        extrapolate: 'clamp',
-                    });
+                          const dotWidth = scrollX.interpolate({
+                              inputRange,
+                              outputRange: [12, 20, 12],
+                              extrapolate: 'clamp',
+                          });
 
-                    return (
-                        <Animated.View
-                            key={idx.toString()}
-                            style={[styles.dot, { width: dotWidth }]}
-                        />
-                    );
-                })}
+                          return (
+                              <Animated.View
+                                  key={idx.toString()}
+                                  style={[styles.dot, { width: dotWidth }]}
+                              />
+                          );
+                      })
+                    : null}
             </View>
         );
     };
@@ -155,12 +175,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
         );
     };
 
-    // UNCOMMENT WHEN NEEDED
-    // useEffect(() => {
-    //     fetchData();
-    // }, []);
-
-    // For locale update on android
+    // For localization update on android
     useEffect(() => {
         console.log(getLocales()[0].languageCode);
         // Localization only changes in Android (in iOS the app is restarted) and
@@ -206,10 +221,10 @@ export default function viewAccom({ propertyId = 51836428 }) {
     async function translateDesc() {
         console.log('pressed');
         console.log(`before translation ${translatedDesc.length}`);
-        if (accomData != null) {
+        if (description != null) {
             if (translatedDesc.length === 0) {
                 try {
-                    const res = await translate(accomData.description, {
+                    const res = await translate(description, {
                         to: locale,
                     });
                     setTranslatedDesc(res.text);
@@ -228,10 +243,14 @@ export default function viewAccom({ propertyId = 51836428 }) {
 
     return (
         <SafeAreaView>
-            {accomData ? (
+            {localParams.id === undefined ? (
+                <View>
+                    <Text>Listing is undefined ¯\_(ツ)_/¯</Text>
+                </View>
+            ) : accomData ? (
                 <ScrollView>
                     <View>
-                        {Slider()}
+                        <Slider />
                         <View
                             style={[
                                 styles.titleGroup,
@@ -311,26 +330,31 @@ export default function viewAccom({ propertyId = 51836428 }) {
                             {i18n.t('desc')}
                         </Text>
                     </View>
-                    <View style={[styles.center, styles.container]}>
-                        <View
-                            style={[styles.informationContainer, styles.shadow]}
-                        >
-                            <Text style={styles.descText}>
-                                {formatText(description)}
-                            </Text>
-                            {/* TODO detect language of description */}
-                            {i18n.locale !== 'en' ? (
-                                <TouchableOpacity
-                                    onPress={translateDesc}
-                                    style={styles.translateBtn}
-                                >
-                                    <Text style={styles.msgTxt}>
-                                        {i18n.t('translate')}
-                                    </Text>
-                                </TouchableOpacity>
-                            ) : null}
+                    {description ? (
+                        <View style={[styles.center, styles.container]}>
+                            <View
+                                style={[
+                                    styles.informationContainer,
+                                    styles.shadow,
+                                ]}
+                            >
+                                <Text style={styles.descText}>
+                                    {formatText(description)}
+                                </Text>
+                                {/* TODO detect language of description */}
+                                {i18n.locale !== 'en' ? (
+                                    <TouchableOpacity
+                                        onPress={translateDesc}
+                                        style={styles.translateBtn}
+                                    >
+                                        <Text style={styles.msgTxt}>
+                                            {i18n.t('translate')}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : null}
+                            </View>
                         </View>
-                    </View>
+                    ) : null}
 
                     {/* Location */}
                     <View style={[styles.horizLine, styles.container]}>
@@ -353,34 +377,42 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         </Text>
                     </View>
 
-                    {/* Features */}
-                    <View style={[styles.horizLine, styles.container]}>
-                        <Text style={styles.containerTitles}>
-                            {i18n.t('features')}
-                        </Text>
-                    </View>
+                    {/* Features  - only display if there are features and they're not undefined!*/}
+                    {accomData.features !== undefined &&
+                    accomData.features &&
+                    accomData.features.length > 0 ? (
+                        <View style={[styles.horizLine, styles.container]}>
+                            <Text style={styles.containerTitles}>
+                                {i18n.t('features')}
+                            </Text>
+                        </View>
+                    ) : null}
 
                     {/* TODO - Translate Features */}
-                    <View
-                        style={[
-                            styles.container,
-                            styles.informationContainer,
-                            styles.shadow,
-                        ]}
-                    >
-                        <View style={styles.facilityList}>
-                            {accomData.features.map((feature, index) => {
-                                return (
-                                    <Text
-                                        key={index}
-                                        style={styles.facilityText}
-                                    >
-                                        {formatText(feature)}
-                                    </Text>
-                                );
-                            })}
+                    {accomData.features !== undefined &&
+                    accomData.features &&
+                    accomData.features.length > 0 ? (
+                        <View
+                            style={[
+                                styles.container,
+                                styles.informationContainer,
+                                styles.shadow,
+                            ]}
+                        >
+                            <View style={styles.facilityList}>
+                                {accomData.features.map((feature, index) => {
+                                    return (
+                                        <Text
+                                            key={index}
+                                            style={styles.facilityText}
+                                        >
+                                            {formatText(feature)}
+                                        </Text>
+                                    );
+                                })}
+                            </View>
                         </View>
-                    </View>
+                    ) : null}
 
                     {/* Accessibility */}
                     <View style={[styles.horizLine, styles.container]}>
@@ -470,7 +502,7 @@ export default function viewAccom({ propertyId = 51836428 }) {
                         <View>
                             <Image
                                 style={styles.profilePic}
-                                source={require('./images/profilePic.png')}
+                                source={require('.././images/profilePic.png')}
                             ></Image>
                         </View>
                         <View style={styles.profileContainer}>
@@ -573,7 +605,7 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     price: {
-        color:'white',
+        color: 'white',
         padding: 7,
         fontSize: 20,
         alignSelf: 'center',
