@@ -12,6 +12,7 @@ import {
     FlatList,
     Dimensions,
     Animated,
+    Share,
 } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -25,7 +26,6 @@ import { I18n } from 'i18n-js';
 import { translations } from '../../../localizations';
 import { RandomRatings } from '../../../randomRatings';
 import { useLocalSearchParams, router } from 'expo-router';
-
 /*
 Accommodation
 
@@ -165,7 +165,7 @@ export default function viewAccom() {
                     onScroll={handleOnScroll}
                 />
                 <View>
-                    <TouchableOpacity style={[styles.shareBtn, styles.shadow]}>
+                    <TouchableOpacity style={[styles.shareBtn, styles.shadow]} onPress = {shareFunc}>
                         <FontAwesome size={30} name="share-alt" color="gray" />
                         <Text style={styles.shareTxt}>{i18n.t('share')}</Text>
                     </TouchableOpacity>
@@ -201,6 +201,18 @@ export default function viewAccom() {
         formattedText = formattedText.replaceAll('& amp;', '&');
         return formattedText;
     };
+
+    // For sharing a listing
+    const shareFunc = async (id) => {
+        
+                try {
+                  await Share.share({
+                    message: "Hey there! 🏠 Found an amazing flat listing that might just be what you're looking for! Check it out here:\n\n" + "exp://192.168.0.9:8081/--/accom/view/?id="+ localParams.id,
+                  });
+                } catch (error) {
+                  alert(error.message);
+                }
+            }
 
     // Sets description state to orignalDesc or translatedDesc depending on current description
     function toggleDesc() {
