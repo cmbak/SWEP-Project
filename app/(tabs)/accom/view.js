@@ -254,7 +254,7 @@ export default function viewAccom() {
     }, [translatedDesc]);
 
     return (
-        <SafeAreaView>
+        <View style={{backgroundColor: '#1E1E1E'}}>
             {localParams.id === undefined ? (
                 <View>
                     <Text>Listing is undefined ¯\_(ツ)_/¯</Text>
@@ -298,10 +298,10 @@ export default function viewAccom() {
                                 <FontAwesome
                                     name="bathtub"
                                     size={24}
-                                    color="black"
+                                    color="white"
                                 />
                                 {/* TODO PLURAL TRANSLATION? */}
-                                <Text>
+                                <Text style={{color: 'white'}}>
                                     {' '}
                                     {accomData.baths} {i18n.t('bath')}
                                 </Text>
@@ -313,9 +313,9 @@ export default function viewAccom() {
                                 <FontAwesome
                                     name="bed"
                                     size={24}
-                                    color="black"
+                                    color="white"
                                 />
-                                <Text>
+                                <Text style={{color: 'white'}}>
                                     {' '}
                                     {accomData.beds} {i18n.t('bed')}
                                 </Text>
@@ -326,9 +326,9 @@ export default function viewAccom() {
                                 <FontAwesome6
                                     name="couch"
                                     size={22}
-                                    color="black"
+                                    color="white"
                                 />
-                                <Text>
+                                <Text style={{color: 'white'}}>
                                     {' '}
                                     {accomData.livingRooms} {i18n.t('livRoom')}
                                 </Text>
@@ -543,10 +543,10 @@ export default function viewAccom() {
                         styles.container,
                     ]}
                 >
-                    <Text>{i18n.t('loadingAccom')}</Text>
+                    <Text style={{color: 'white'}}>{i18n.t('loadingAccom')}</Text>
                 </View>
             )}
-        </SafeAreaView>
+        </View>
     );
 }
 
@@ -572,6 +572,7 @@ const styles = StyleSheet.create({
         borderRadius: 13,
     },
     containerTitles: {
+        color: 'white',
         fontSize: 20,
         fontWeight: '500',
     },
@@ -613,7 +614,8 @@ const styles = StyleSheet.create({
         alignContent: 'center',
     },
     datePosted: {
-        color: '#494949',
+        // color: '#494949',
+        color: 'white',
         alignSelf: 'center',
     },
     price: {
@@ -624,6 +626,7 @@ const styles = StyleSheet.create({
         fontWeight: '500',
     },
     accomTitle: {
+        color: 'white',
         fontSize: 27,
         alignSelf: 'center',
         fontWeight: 'bold',
