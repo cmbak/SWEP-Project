@@ -90,7 +90,9 @@ export default function viewAccom() {
     };
 
     useEffect(() => {
-        fetchData();
+        if (localParams.id !== undefined) {
+            fetchData();
+        }
     }, []);
 
     const { width, height } = Dimensions.get('screen');
@@ -241,7 +243,11 @@ export default function viewAccom() {
 
     return (
         <SafeAreaView>
-            {accomData ? (
+            {localParams.id === undefined ? (
+                <View>
+                    <Text>Listing is undefined ¯\_(ツ)_/¯</Text>
+                </View>
+            ) : accomData ? (
                 <ScrollView>
                     <View>
                         <Slider />
