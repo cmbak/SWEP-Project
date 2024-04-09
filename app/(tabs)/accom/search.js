@@ -42,6 +42,19 @@ export default function search() {
     };
 
     const handleSubmit = () => {
+        if (listings === null || listings.length === 0) {
+            Alert.alert(
+                'No location entered',
+                'Please enter a location and try again.',
+                [
+                    {
+                        text: 'OK',
+                        onPress: () => console.log('No location alert shown'),
+                    },
+                ]
+            );
+            return;
+        }
         getListings();
     };
 
