@@ -8,22 +8,20 @@ import {
     ScrollView,
     Pressable,
     Platform,
-    Dimensions
+    Dimensions,
+    Alert
 } from 'react-native';
-import Svg, { Path } from 'react-native-svg';
+import * as React from 'react';
 import * as Progress from 'react-native-progress';
 import { Ionicons } from '@expo/vector-icons';
-import * as React from 'react';
-// import { SearchBar } from '@rneui/themed';
 import { SearchBar } from 'react-native-elements';
-import { FontAwesome } from '@expo/vector-icons';
-
-import Slider from '@react-native-community/slider';
+import { Svg , Path } from 'react-native-svg';
 import { useEffect, useState } from 'react';
-import axios from 'axios';
 import { key } from '../../../apiKey';
 import { Link, useRouter } from 'expo-router';
 import { router } from 'expo-router';
+import Slider from '@react-native-community/slider';
+import axios from 'axios';
 
 export default function search() {
     const [SearchInput, setSearchInput] = useState('');
@@ -59,18 +57,19 @@ export default function search() {
         setSearchInput('');
         setMinPrice('0');
         setMaxPrice('5000');
-        setMaxBeds('0');
-        setMinBeds('10');
-        setIsFilterVisible(!isFilterVisible);
+        setMaxBeds('');
+        setMinBeds('');
+        // setIsFilterVisible(!isFilterVisible);
     };
 
     const toggleFilters = () => {
         setIsFilterVisible(!isFilterVisible);
     };
 
-    const getListings = async () => {
+    const getListings = async () => { 
         setLoading(true);
         setProgress(0)
+
         const params = {
             locationKey: SearchInput,
             minPrice: minPrice,
@@ -79,6 +78,7 @@ export default function search() {
             sort: 'recent',
             maxPrice: maxPrice,
         };
+        
         const headers = {
             'X-RapidAPI-Key': key,
             'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
@@ -98,14 +98,30 @@ export default function search() {
             //     const response1 = await axios.get(`https://zoopla4.p.rapidapi.com/properties/${propertyID}`);
             //     setListingDetailed(prevListings => [...prevListings, response1.data]);
             // }
+
+            if (response.data.data.length === 0) {
+                // Show alert if no listings found
+                Alert.alert(
+                    'No Listings Found', 
+                    'Please try another location or adjust your search criteria.', 
+                    [{text: 'OK', onPress: () => console.log('OK Pressed')}]
+                );
+            }
+
         } catch (error) {
-            console.error(error);
+            console.error(error); // when presenting, comment out
             setLoading(false);
+            Alert.alert(
+                'Empty input', 
+                'Please enter a location', 
+                [{text: 'OK', onPress: () => console.log('OK Pressed')}]
+            );
+
         }
     };
+
     useEffect(() => {
         const fetchData = async () => {
-            // setLoading(true);
             if (listings) {
                 try {
                     const headers = {
@@ -130,7 +146,7 @@ export default function search() {
                     }
                     console.log(listingDetailed, 'outside loop');
                 } catch (error) {
-                    console.error(error);
+                    console.error(error); // when presenting, comment out
                 } finally {
                     setLoading(false);
                 }
@@ -170,14 +186,13 @@ export default function search() {
                         value={SearchInput}
                         cancelButtonTitle
                         showCancel='true'
-                        containerStyle={styles.searchContainer}
+                        containerStyle={styles.searchBarContainer}
                         inputContainerStyle={styles.inputContainerStyle}
                         onChangeText={handleInputChange}
                     />
 
                     {/* Search Button */}
                     <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
-                        {/* <FontAwesome name="search" size={35} color="black" /> */}
                         <Text style={styles.searchButtonText}>
                             Search
                         </Text>
@@ -197,52 +212,74 @@ export default function search() {
                     >
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
+
+                                <TouchableOpacity style={styles.filterCloseButton} onPress={() => setIsFilterVisible(false)}>
+                                    <Ionicons name="close" size={24} color="black" />
+                                </TouchableOpacity>
+
+                                {/* Minimum Price Slider */}
+                                <Text>Min Price: {minPrice}</Text>
                                 <Slider
-                                    style={{ width: 200, marginVertical: 10 }}
+                                    style={{ width: '100%', marginVertical: 5 }}
                                     minimumValue={0}
                                     maximumValue={5000}
                                     step={50}
                                     value={minPrice}
                                     onValueChange={setMinPrice}
                                 />
-                                <Text>Min Price: {minPrice}</Text>
+     
+                                {/* Maximum Price Slider */}
+                                <Text>Max Price: {maxPrice}</Text>  
                                 <Slider
-                                    style={{ width: 200, marginVertical: 10 }}
+                                    style={{ width: '100%', marginVertical: 5 }}
                                     minimumValue={0}
                                     maximumValue={5000}
                                     step={50}
                                     value={maxPrice}
                                     onValueChange={setMaxPrice}
                                 />
-                                <Text>Max Price: {maxPrice}</Text>
+
+                                {/* Minimum Beds */} 
                                 <TextInput
                                     style={styles.input}
-                                    placeholder={maxBeds}
-                                    value={maxBeds}
-                                    onChangeText={handleMaxBedsChange}
-                                    keyboardType="numeric"
-                                />
-                                <TextInput
-                                    style={styles.input}
-                                    placeholder={minBeds}
+                                    placeholder="Minimum beds"
+                                    placeholderTextColor='gray'
                                     value={minBeds}
                                     onChangeText={handleMinBedsChange}
                                     keyboardType="numeric"
                                 />
-                                <TouchableOpacity
-                                    style={[styles.button, { backgroundColor: 'red' }]}
-                                    onPress={handleClear}
-                                >
-                                    <Text style={{ color: 'white' }}>
-                                        Clear Filters and Close
-                                    </Text>
-                                </TouchableOpacity>
-                                <TouchableOpacity
-                                    style={styles.button}
-                                    onPress={toggleFilters}
-                                >
-                                    <Text>Add Filters</Text>
-                                </TouchableOpacity>
+
+                                {/* Maximum Beds */}
+                                <TextInput
+                                    style={styles.input}
+                                    placeholder="Maximum beds"
+                                    placeholderTextColor='gray'
+                                    value={maxBeds}
+                                    onChangeText={handleMaxBedsChange}
+                                    keyboardType="numeric"
+                                />
+
+                                <View style={styles.filterButtons}>
+                                    {/* Clear Filters */}
+                                    <TouchableOpacity
+                                        style={styles.clearFilterButton}
+                                        onPress={handleClear}
+                                        >
+                                        <Text style={styles.clearFilterText}>
+                                            Clear Filters
+                                        </Text>
+                                    </TouchableOpacity>
+
+                                    {/* Apply */}
+                                    <TouchableOpacity
+                                        style={styles.applyFilterButton}
+                                        onPress={toggleFilters}
+                                        >
+                                        <Text style={styles.applyFilterText}>
+                                            Apply Filters
+                                        </Text>
+                                    </TouchableOpacity>
+                                </View>     
                             </View>
                         </View>
                     </Modal>
@@ -289,22 +326,30 @@ export default function search() {
                                     }
                                 >
                                     <View style={[styles.propertyOverview, styles.shadow]} key={listing.id}>
+                                        {/* Property Image */}
                                         <Image style={styles.propertyImage}
                                             source={{ uri: listing.images[0] }}
-                                            // style={{ width: 200, height: 200 }}
                                         />
-                                        <Text style={[styles.propertyText, styles.propertyName]}>
-                                            {listing.name}
-                                            {/* {'\n'} */}
-                                        </Text>
-                                        <Text style={[styles.propertyText, styles.propertyAddress]}>
-                                            {listing.address}
-                                        </Text>
-                                        <Text style={[styles.propertyText, styles.propertyPrice]}>
-                                            {`£${listing.price}pcm`}
-                                            {/* {'\n'} */}
-                                        </Text>
-                                        {/* <Text>View Accommodation Listing</Text> */}
+                                        
+                                        {/* Property Details */}
+                                        <View style={styles.propertyText}>
+                                            {/* Property Name */}
+                                            <Text style={styles.propertyName}>
+                                                {listing.name}
+                                            </Text>
+                                            {/* Property Address */}
+                                            <View style={styles.propertyAddressContainer}>
+                                                <Text style={styles.propertyAddress}>
+                                                    {listing.address}
+                                                </Text>
+                                            </View>
+                                            {/* Property Price */}
+                                            <View style={styles.propertyPriceContainer}>
+                                                <Text style={styles.propertyPrice}>
+                                                    {`£${listing.price}pcm`}
+                                                </Text>
+                                            </View>
+                                        </View>
                                     </View>
                                 </Pressable>
                             ))}
@@ -316,6 +361,7 @@ export default function search() {
 }
 
 const styles = {
+    // Main containers
     searchPageContainer: {
         flex: 1,
         backgroundColor: '#1E1E1E',
@@ -325,18 +371,38 @@ const styles = {
         backgroundColor: '#1E1E1E',
         justifyContent: 'center',
         alignItems: 'center',
-        // paddingVertical: 20,
-        // marginHorizontal: 20,
-        
     },
+    
+
+    // FDM logo
     fdmLogo: {
         marginBottom: 30,
     },
+
+
+    // Search Bar
+    searchGroup: {
+        width: Dimensions.get('screen').width - 20,
+        marginBottom: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+    searchBarContainer: {
+        width: '80%',
+        height: 50,
+        borderRadius: 20,
+    },
+    inputContainerStyle: {
+        backgroundColor: 'none',
+        height: 10,
+        borderRadius: 20,
+    },
+
+
+    // Search Button
     searchButton: {
-        // backgroundColor: 'lightblue',
         borderRadius: 5,
         padding: 10,
-        // marginBottom: 10,
         justifyContent: 'center',
         alignItems: 'center',
     },
@@ -345,13 +411,17 @@ const styles = {
         fontSize: 16,
         fontWeight: '700',
     },
-    icon: {
-        width: 20,
-        height: 20,
-        resizeMode: 'contain',
-    },
+
+
+    // Filter
     filterButton: {
-        // backgroundColor: 'green', 
+
+    },
+    input: {
+        backgroundColor: '#cfcfcf',
+        borderRadius: 10,
+        padding: 10,
+        marginBottom: 10
     },
     modalContainer: {
         flex: 1,
@@ -359,53 +429,97 @@ const styles = {
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    modalContent: {
+    modalContent: { 
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
         width: '80%',
     },
-    searchResults: {
-        marginTop: 20,
-        // width: '100%',
+    filterButtons: {
+        marginTop: 5,
+        flexDirection: 'row',
+        justifyContent: 'center',
+        gap: 30,
     },
+    clearFilterButton: {
+        fontWeight: '600',
+        margin: 5,
+        padding: 15,
+        backgroundColor: 'black',
+        borderRadius: 15
+    },
+    applyFilterButton: {
+        margin: 5,
+        padding: 15,
+        backgroundColor: 'black',
+        borderRadius: 15
+    },
+    applyFilterText: {
+        color: 'white',
+        fontWeight: '600',
+    },
+    filterCloseButton: {
+        justifyContent: 'flex-end',
+        alignItems: 'flex-end',
+    },
+    clearFilterText: {
+        color: 'white',
+        fontWeight: '600',
+    },
+
+    // Search results
+    searchResults: {
+        // marginTop: 10,
+    },
+
+
+    // Listing
     propertyOverview: {
-        // width: '100%',
         marginBottom: 30,
         backgroundColor: '#e6e6e6',
         paddingBottom: 10,
         borderRadius: 20,
+        marginHorizontal: 40
     },
     propertyImage: {
         justifyContent: 'center',
         alignItems: 'center',
-        width: Dimensions.get('screen').width - 5,
-        height: 300,
-        // margin: 20,
-        // padding: 20,
+        width: Dimensions.get('screen').width - 40,
+        height: 250,
         borderTopLeftRadius: 20,
-        borderTopRightRadius: 20,
+        borderTopRightRadius: 20
     },
     propertyText: {
         textAlign: 'center',
         paddingHorizontal: 10,
-        marginTop: 5,
+        marginTop: 7,
         justifyContent: 'center',
-        alignItems: 'center',
+        alignItems: 'center'
     },
     propertyName: {
+        marginTop: 5,
         fontSize: 25,
-        fontWeight: 'bold',
+        fontWeight: 'bold'
     },
     propertyAddress: {
         fontSize: 15,
+        marginBottom: 5,
+        marginTop: 5,
     },
     propertyPrice: {
         fontSize: 20,
+        fontWeight:'600',
     },
-    progressContainer: {
+    propertyPriceContainer: {
+        marginTop: 10,
+        backgroundColor: '#D9D9D9',
+        padding: 10,
+        borderRadius: 20,
+        marginBottom: 5,
+    },
 
-    },
+
+    // Loading bar
     loadingText: {
         textAlign: 'center',
         color: 'white',
@@ -413,24 +527,9 @@ const styles = {
     progress: {
         borderColor: 'none',
     },
-    searchGroup: {
-        width: Dimensions.get('screen').width - 20,
-        marginBottom: 20,
-        justifyContent: 'center',
-        alignItems: 'center',
-        // flexDirection: 'row',
-    },
-    searchContainer: {
-        width: '80%',
-        height: 50,
-        // backgroundColor: 'blue',
-        borderRadius: 20,
-    },
-    inputContainerStyle: {
-        backgroundColor: 'none',
-        height: 10,
-        borderRadius: 20,
-    },
+
+
+    // Shadow
     shadow: {
         ...Platform.select({
             ios: {

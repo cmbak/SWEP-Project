@@ -254,7 +254,7 @@ export default function viewAccom() {
     }, [translatedDesc]);
 
     return (
-        <View style={{backgroundColor: '#1E1E1E'}}>
+        <View style={styles.viewContainer}>
             {localParams.id === undefined ? (
                 <View>
                     <Text>Listing is undefined ¯\_(ツ)_/¯</Text>
@@ -543,7 +543,7 @@ export default function viewAccom() {
                         styles.container,
                     ]}
                 >
-                    <Text style={{color: 'white'}}>{i18n.t('loadingAccom')}</Text>
+                    <Text style={styles.loadingText}>{i18n.t('loadingAccom')}</Text>
                 </View>
             )}
         </View>
@@ -551,13 +551,21 @@ export default function viewAccom() {
 }
 
 const styles = StyleSheet.create({
+    viewContainer: {
+        backgroundColor: '#1E1E1E',
+         flexGrow:1,
+    },
     container: {
         marginHorizontal: 20,
     },
     loadingContainer: {
         justifyContent: 'center',
         alignItems: 'center',
-        flexDirection: 'row',
+        flex: 1,
+    },
+    loadingText: {
+        fontSize: 20,
+        color: 'white',
     },
     informationContainer: {
         backgroundColor: 'white',
@@ -565,7 +573,7 @@ const styles = StyleSheet.create({
         borderRadius: 13,
     },
     priceContainer: {
-        backgroundColor: '#1e1e1e',
+        backgroundColor: 'white',
         marginTop: 10,
         paddingVertical: 10,
         paddingHorizontal: 10,
@@ -619,7 +627,6 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
     },
     price: {
-        color: 'white',
         padding: 7,
         fontSize: 20,
         alignSelf: 'center',
