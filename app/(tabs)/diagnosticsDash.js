@@ -17,6 +17,8 @@ import {
 } from 'react-native';
 
 import {LineChart, BarChart,} from 'react-native-chart-kit';
+import { MaterialIcons } from '@expo/vector-icons';
+import { Entypo } from '@expo/vector-icons';
 
 import {Table, Row, Rows } from "react-native-table-component";
 
@@ -208,48 +210,57 @@ export default function diagnosticsDash() {
                 ) : null}
 
 
-                {/* The first row with the graph image and contact image*/}
-                {displayDashboardRow1 ? (
-                    <View style={styles.dashboardContainer}>
-                        <TouchableOpacity onPress={() => showGraph()}> 
-                            <Image source={require("../../assets/graph-icon.png")} style={styles.graphImage} />
-                        </TouchableOpacity>
+                <View style={styles.center}>
+                    {/* The first row with the graph image and contact image*/}
+                    {displayDashboardRow1 ? (
+                        <View style={[styles.dashboardContainer, styles.row1]}>
+                            <TouchableOpacity onPress={() => showGraph()} style={styles.graphImage}> 
+                                {/* <Image source={require("../../assets/graph-icon.png")} style={styles.graphImage} /> */}
+                                <Entypo name="bar-graph" size={120} color="#C6FF00" />
+                                <Text style={styles.imageDesc}>Issues Reported</Text>
+                            </TouchableOpacity>
 
-                        <TouchableOpacity onPress={() => showDevForm()}> 
-                            <Image source={require("../../assets/report-symbol.png")} style={styles.reportImage} />
-                        </TouchableOpacity>
+                            <TouchableOpacity onPress={() => showDevForm()} style={styles.reportImage}> 
+                                {/* <Image source={require("../../assets/report-symbol.png")} style={styles.reportImage} /> */}
+                                <Entypo name="new-message" size={120} color="#C6FF00" />
+                                <Text style={styles.imageDesc}>Contact Developer</Text>
+                            </TouchableOpacity>
+                    </View>
+                    ) : null}
+                    
+
+                    {/* {displayImageDesc1 ? (
+                        <View style={styles.descContainer}>
+                            <Text style={[styles.imageDesc, styles.issuesText]}>Issues reported</Text>
+                            <Text style={[styles.imageDesc, styles.contactText]}>Contact developer</Text>
+                        </View>
+                    ) : null} */}
+
+                    {/* The second row with the unsolved problems image and the chat image*/}
+                    {displayDashboardRow2 ? (
+                        <View style={[styles.dashboardContainer, styles.row2]}>
+                            <TouchableOpacity onPress={() => showProblemTable()} style={styles.problemImage}> 
+                                {/* <Image source={require("../../assets/problem.png")} style={styles.problemImage} /> */}
+                                <MaterialIcons name="report-problem" size={130} color="#C6FF00" />
+                                <Text style={styles.imageDesc}>Unsolved problems</Text>
+                            </TouchableOpacity>
+                    
+                            <TouchableOpacity onPress={() => showUserChat()} style={styles.chatImage}> 
+                                {/* <Image source={require("../../assets/chat.png")} style={styles.chatImage}/> */}
+                                <MaterialIcons name="message" size={130} color="#C6FF00" />
+                                <Text style={styles.imageDesc}>Chat with users</Text>
+                            </TouchableOpacity>
+                        </View>
+                    ): null}
+                    
+
+                    {/* {displayImageDesc2 ? (
+                        <View style={styles.descContainer}>
+                            <Text style={[styles.imageDesc, styles.problemsText]}>Unsolved problems</Text>
+                            <Text style={[styles.imageDesc, styles.usersText]}>Chat with users</Text>
+                        </View>
+                    ) : null} */}
                 </View>
-                ) : null}
-                
-
-                {displayImageDesc1 ? (
-                    <View style={styles.descContainer}>
-                        <Text style={[styles.imageDesc, styles.issuesText]}>Issues reported</Text>
-                        <Text style={[styles.imageDesc, styles.contactText]}>Contact developer</Text>
-                    </View>
-                ) : null}
-
-                {/* The second row with the unsolved problems image and the chat image*/}
-                {displayDashboardRow2 ? (
-                    <View style={styles.dashboardContainer}>
-                        <TouchableOpacity onPress={() => showProblemTable()}> 
-                            <Image source={require("../../assets/problem.png")} style={styles.problemImage} />
-                        </TouchableOpacity>
-                   
-                        <TouchableOpacity onPress={() => showUserChat()}> 
-                            <Image source={require("../../assets/chat.png")} style={styles.chatImage}/>
-                        </TouchableOpacity>
-                    </View>
-                ): null}
-                
-
-                {displayImageDesc2 ? (
-                    <View style={styles.descContainer}>
-                        <Text style={[styles.imageDesc, styles.problemsText]}>Unsolved problems</Text>
-                        <Text style={[styles.imageDesc, styles.usersText]}>Chat with users</Text>
-                    </View>
-                ) : null}
-
                 
                 {displayGraph ? (
                     <View>
@@ -285,11 +296,11 @@ export default function diagnosticsDash() {
                     <View style={{margin: 20}}> 
                         <Text style={styles.lineGraphTitle}> Contact a developer </Text>
 
-                        <TextInput style={styles.nameInput} value={name} onChangeText={setName} placeholder="Admin's Name" autoCorrect={false}/>
+                        <TextInput style={styles.nameInput} value={name} onChangeText={setName} placeholder="Admin's Name" placeholderTextColor='gray' backgroundColor='#cfcfcf' autoCorrect={false}/>
                         {errors.name ? (<Text style={styles.errorText}>{errors.name}</Text>) : null} 
                         {/* Display error text if they did not enter a name or problem */}
 
-                        <TextInput style={[styles.nameInput, styles.problemInput]} placeholder="Problem" multiline autoCorrect={false} value={problem} onChangeText={setProblem} />
+                        <TextInput style={[styles.nameInput, styles.problemInput]} placeholder="Problem" multiline placeholderTextColor='gray' backgroundColor='#cfcfcf' autoCorrect={false} value={problem} onChangeText={setProblem} />
                         {errors.problem ? (<Text style={styles.errorText}>{errors.problem}</Text>) : null} 
 
                         <TouchableOpacity style={styles.submitButton} onPress={() => handleSubmit()}>
@@ -419,11 +430,13 @@ const styles = StyleSheet.create({
     safeContainer: {
         flex: 1,
         marginTop: StatusBar.currentHeight,
+        backgroundColor: '#1E1E1E'
     },
     dashboardTitle: {
+        color: 'white',
         alignSelf: "center",
         fontWeight: "bold",
-        fontSize: 20,
+        fontSize: 17,
         marginTop: 10
     },
     nameInput: {
@@ -439,40 +452,52 @@ const styles = StyleSheet.create({
     },
     dashboardContainer: {
         flexDirection: "row",
-        marginTop: 20,
-        marginBottom: 20,
-        marginRight: 30,
+        gap: 60
+        // marginTop: 20,
+        // marginBottom: 20,
+        // marginRight: 30,
+    },
+    row1: {
+        marginTop: 40,
+        marginBottom: 40
     },
     reportImage: {
-        height: 140,
-        width: 130,
-        marginLeft: 75,
-        marginTop: 10,
+        alignItems: 'center'
+        // height: 140,
+        // width: 130,
+        // marginLeft: 75,
+        // marginTop: 10,
     },
     graphImage: {
-        marginLeft: 30,
-        marginTop: 15,
+        alignItems: 'center'
+        // marginLeft: 30,
+        // marginTop: 15,
     },
     problemImage: {
-        marginTop: 40,
-        marginLeft: 35,
-        height: 125,
-        width: 125,
+        // backgroundColor: 'white'
+        alignItems: 'center'
+        // marginTop: 40,
+        // marginLeft: 35,
+        // height: 125,
+        // width: 125,
     },
     chatImage: {
-        height: 125,
-        width: 125,
-        marginLeft: 72,
-        marginTop: 45
+        alignItems: 'center'
+        // height: 125,
+        // width: 125,
+        // marginLeft: 72,
+        // marginTop: 45
     },
     descContainer: {
         flexDirection: "row",
-        justifyContent: "center",
     },
     imageDesc: {
+        marginTop: 30,
         fontWeight: "bold",
         fontSize: 15,
-        color: "#113f67"
+        // color: "#113f67"
+        color: 'white',
+        textAlign: 'center',
     },
     issuesText: {
         marginRight: 20,
@@ -481,7 +506,7 @@ const styles = StyleSheet.create({
         marginLeft: 50,
     },
     problemsText:{
-        marginRight: 70,
+        marginRight: 50,
     },
     usersText: {
         marginRight: 15,
@@ -509,6 +534,7 @@ const styles = StyleSheet.create({
         marginTop: 10,
     },
     lineGraphTitle:{
+        color: 'white',
         alignSelf: "center",
         marginTop: 30,
         marginBottom: 18,
@@ -631,5 +657,9 @@ const styles = StyleSheet.create({
     },
     sendText: {
         fontSize: 20
+    },
+    center: {
+        justifyContent: 'center',
+        alignItems: 'center'
     }
 })
