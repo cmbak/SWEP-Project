@@ -42,7 +42,8 @@ export default function search() {
     };
 
     const handleSubmit = () => {
-        if (listings === null || listings.length === 0) {
+        // if (listings === null || listings.length === 0) {
+        if (SearchInput.length === 0) {
             Alert.alert(
                 'No location entered',
                 'Please enter a location and try again.',
@@ -137,7 +138,7 @@ export default function search() {
                         'X-RapidAPI-Key': key,
                         'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
                     };
-                    for (let i = 0; i < listings.length; i++) {
+                    for (let i = 0; i < 1; i++) {
                         const propertyID = listings[i].id;
                         console.log(propertyID);
                         const response1 = await axios.get(
@@ -329,7 +330,7 @@ export default function search() {
                 ) : (
                     <View style={styles.searchResults}>
                         {listings &&
-                            listingDetailed.length === listings.length &&
+                            listingDetailed.length === 1 &&
                             listingDetailed.map((listing, index) => (
                                 <Pressable
                                     onPress={() =>

@@ -47,12 +47,6 @@ export default function viewAccom() {
     const localParams = useLocalSearchParams();
     console.log('in view');
     console.log(localParams); // sometimes listing and id are undefined?
-    // console.log(localParams.listing);
-    // // console.log(JSON.stringify(localParams.listing))
-    // console.log(localParams.id); // Sometimes this gets undefined?
-    // console.log(localParams.images);
-    // // console.log(localParams.parseImg);
-    // console.log(localParams.stringImg);
 
     const randomRatings = new RandomRatings(3);
     const [accomData, setAccomData] = useState(null);
@@ -61,6 +55,12 @@ export default function viewAccom() {
     const [originalDesc, setOriginalDesc] = useState(null);
     const [translatedDesc, setTranslatedDesc] = useState('');
     const [description, setDescription] = useState(null);
+    const [originalAccomName, setOriginalAccomName] = useState(null);
+    const [translatedAccomName, setTranslatedAccomName] = useState('');
+    const [accomName, setAccomName] = useState(null);
+    const [originalFeatures, setOriginalFeatures] = useState(null);
+    const [translatedFeatures, setTranslatedFeatures] = useState([]);
+    const [features, setFeatures] = useState(null);
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
@@ -81,8 +81,15 @@ export default function viewAccom() {
         try {
             response = await axios.request(options);
             setAccomData(response.data.data);
+
             setOriginalDesc(response.data.data.description);
             setDescription(response.data.data.description);
+
+            setOriginalAccomName(response.data.data.name);
+            setAccomName(response.data.data.name);
+
+            setOriginalFeatures(response.data.data.features);
+            setFeatures(response.data.data.features);
             console.log(response.data.data);
         } catch (error) {
             console.error(error);
@@ -233,11 +240,36 @@ export default function viewAccom() {
         }
     }
 
-    // Translates the desc and sets accomData.desc to that
+    // Toggle accom name to original or translated version
+    function toggleAccomName() {
+        if (translatedAccomName.length === 0) {
+            return;
+        }
+        if (accomName === originalAccomName) {
+            setAccomName(translatedAccomName);
+        } else {
+            setAccomName(originalAccomName);
+        }
+    }
+
+    // Toggle features list to original or translated version
+    function toggleFeatures() {
+        if (translatedFeatures.length === 0) {
+            console.log('FEATURES HAVENT BEEN TRANSLATED SO NO TOGGLE!');
+            return;
+        }
+        if (features === originalFeatures) {
+            setFeatures(translatedFeatures);
+        } else {
+            setFeatures(originalFeatures);
+        }
+    }
+
+    // Translates the desc and sets translatedDesc to that
     async function translateDesc() {
         console.log('pressed');
         console.log(`before translation ${translatedDesc.length}`);
-        if (description != null) {
+        if (description !== null) {
             if (translatedDesc.length === 0) {
                 try {
                     const res = await translate(description, {
@@ -252,10 +284,71 @@ export default function viewAccom() {
         }
     }
 
+    // Translates the accom name and sets accomName to that
+    async function translateAccomName() {
+        // console.log('pressed');
+        // console.log(`before translation ${translate.length}`);
+        if (translatedAccomName.length === 0) {
+            try {
+                const res = await translate(accomName, { to: locale });
+                setTranslatedAccomName(res.text);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+        toggleAccomName();
+    }
+
+    // Translates the features list and sets featuresList to that
+    async function translateFeatures() {
+        console.log('In translate Features');
+        console.log(translatedFeatures.length);
+        console.log('Features.length');
+        console.log(features.length);
+        if (translatedFeatures.length === 0) {
+            // Only translate if description has been translated
+            (async () => {
+                try {
+                    console.log('In translated features try');
+                    let newFeatures = [];
+                    for (const feature of features) {
+                        const res = await translate(feature, { to: locale });
+                        newFeatures.push(res.text);
+                        console.log(`Translated Feature ${res.text}`);
+                    }
+                    console.log('Translated Features array:');
+                    console.log(newFeatures);
+                    setTranslatedFeatures(newFeatures);
+                } catch (error) {
+                    console.log(error);
+                }
+            })();
+        }
+        toggleFeatures();
+    }
+
+    // Translates the features, description and accommodation name and sets these as the new values
+    async function translateAll() {
+        console.log('TranslateAll called');
+        await translateFeatures();
+        translateAccomName();
+        translateDesc();
+        console.log('Features after toggle');
+        console.log(features);
+    }
+
     // Want to toggle desc but only after translateDesc state has been updated and not before any translation has occurred
     useEffect(() => {
         toggleDesc();
     }, [translatedDesc]);
+
+    useEffect(() => {
+        toggleAccomName();
+    }, [translatedAccomName]);
+
+    useEffect(() => {
+        toggleFeatures();
+    }, [translatedFeatures]);
 
     return (
         <View style={styles.viewContainer}>
@@ -276,7 +369,7 @@ export default function viewAccom() {
                         >
                             <View>
                                 <Text style={styles.accomTitle}>
-                                    {accomData.name}
+                                    {accomName}
                                 </Text>
                                 <Text style={styles.datePosted}>
                                     {`${i18n.t('available')} ${formatDate(
@@ -360,7 +453,7 @@ export default function viewAccom() {
                                 {/* TODO detect language of description */}
                                 {i18n.locale !== 'en' ? (
                                     <TouchableOpacity
-                                        onPress={translateDesc}
+                                        onPress={translateAll}
                                         style={styles.translateBtn}
                                     >
                                         <Text style={styles.msgTxt}>
@@ -385,6 +478,7 @@ export default function viewAccom() {
                             styles.twoRow,
                             styles.informationContainer,
                             styles.shadow,
+                            styles.locationContainer,
                         ]}
                     >
                         <Text style={styles.rowText}>{accomData.address}</Text>
@@ -394,9 +488,9 @@ export default function viewAccom() {
                     </View>
 
                     {/* Features  - only display if there are features and they're not undefined!*/}
-                    {accomData.features !== undefined &&
-                    accomData.features &&
-                    accomData.features.length > 0 ? (
+                    {features !== undefined &&
+                    features &&
+                    features.length > 0 ? (
                         <View style={[styles.horizLine, styles.container]}>
                             <Text style={styles.containerTitles}>
                                 {i18n.t('features')}
@@ -404,10 +498,9 @@ export default function viewAccom() {
                         </View>
                     ) : null}
 
-                    {/* TODO - Translate Features */}
-                    {accomData.features !== undefined &&
-                    accomData.features &&
-                    accomData.features.length > 0 ? (
+                    {features !== undefined &&
+                    features &&
+                    features.length > 0 ? (
                         <View
                             style={[
                                 styles.container,
@@ -416,7 +509,7 @@ export default function viewAccom() {
                             ]}
                         >
                             <View style={styles.facilityList}>
-                                {accomData.features.map((feature, index) => {
+                                {features.map((feature, index) => {
                                     return (
                                         <Text
                                             key={index}
@@ -788,11 +881,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    // Probably should be a 'class'
     translateBtn: {
         backgroundColor: '#1e1e1e',
         borderRadius: 13,
         padding: 10,
         margin: 5,
+    },
+    locationContainer: {
+        flexDirection: 'column',
     },
 });
