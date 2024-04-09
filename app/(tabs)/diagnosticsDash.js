@@ -19,6 +19,7 @@ import {
 import {LineChart, BarChart,} from 'react-native-chart-kit';
 import { MaterialIcons } from '@expo/vector-icons';
 import { Entypo } from '@expo/vector-icons';
+import { Ionicons } from '@expo/vector-icons';
 
 import {Table, Row, Rows } from "react-native-table-component";
 
@@ -205,7 +206,7 @@ export default function diagnosticsDash() {
                 
                 {displayBackIcon ? (
                     <TouchableOpacity onPress={() => goBack()}> 
-                        <Image source={require("../../assets/back.png")} style={styles.backImage} />
+                        <Ionicons name="chevron-back-sharp" size={24} color="white" style={styles.backImage} />
                     </TouchableOpacity>
                 ) : null}
 
@@ -343,7 +344,7 @@ export default function diagnosticsDash() {
                             {/* Added 3 parent views to create 3 equal spaces on the row to align items properly */}
                             <View style={styles.headerBox}> 
                                 <TouchableOpacity onPress={() => goBack()}> 
-                                    <Image source={require("../../assets/back.png")} style={{marginRight: 55,}} />
+                                    <Ionicons name="chevron-back-sharp" size={24} color="black" style={{marginRight: 55,}} />
                                 </TouchableOpacity>
                             </View>
 
@@ -381,7 +382,7 @@ export default function diagnosticsDash() {
                     <KeyboardAvoidingView keyboardVerticalOffset={offset} behavior="position" enabled>
                         <View style={styles.chatHeaderBorder}>
                             <TouchableOpacity style={styles.rowBox} onPress={() => goBack("specificChat")}> 
-                                <Image source={require("../../assets/back.png")} style={{marginLeft: 15,}} />
+                                <Ionicons name="chevron-back-sharp" size={24} color="black" style={{marginLeft: 15,}} />
                             </TouchableOpacity>
 
                             <View style={styles.rowBox}>
@@ -394,24 +395,25 @@ export default function diagnosticsDash() {
                         </View>
 
    
-                        <View style={{height: screenHeight - 200, backgroundColor: "lightgrey"}}> 
-                            <Text style={[styles.specificMessage, {marginTop: messageMargin}]}>{messages[currentUser][0]}</Text>
+                        <View style={{height: screenHeight - 200, backgroundColor: "#1E1E1E"}}> 
+                            <Text style={[styles.specificMessage, {marginTop: messageMargin, backgroundColor: 'white'}]}>{messages[currentUser][0]}</Text>
 
                             {(replyList != []) ? (
                                 replyList.map(msg => 
                                     <View style={{flexDirection: "row", justifyContent: "flex-end"}}>
-                                        <Text style={[styles.specificMessage, {backgroundColor: "#007FFF", marginBottom: 10}]}>{msg}</Text>
+                                        <Text style={[styles.specificMessage, {backgroundColor: "#C6FF00", marginBottom: 10}]}>{msg}</Text>
                                     </View>
                                 )
                             ) : null}
                                          
                             <View style={{flexDirection: "row", justifyContent: "flex-end"}}> 
-                                <TextInput style={styles.enterMessage} value={reply} onChangeText={setReply} placeholder="Enter message" multiline autoCorrect={false}
+                                <TextInput style={styles.enterMessage} value={reply} onChangeText={setReply} placeholder="Enter message" color='white' multiline autoCorrect={false}
                                     onFocus={() => addOffset(60)} onBlur={() => addOffset(0)}/>
                                     {/* Move the keyboard down by 60 when the Issue box is clicked on, and back to 0 when not clicked on */}
                                 
                                 <TouchableOpacity style={styles.send} onPress={() => sendMessage()}>
-                                    <Text style={styles.sendText}> Send </Text>
+                                    {/* <Text style={styles.sendText}> Send </Text> */}
+                                    <Ionicons name="send" size={34} color="#C6FF00" />
                                 </TouchableOpacity>
                             </View>
                             
@@ -515,7 +517,7 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         borderWidth: 1,
         margin: 20,
-        backgroundColor: "#7FCDCD",
+        backgroundColor: "#C6FF00",
         borderRadius: 10,
         height: 45,
         width: 100,
@@ -530,7 +532,7 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
     backImage: {
-        marginLeft: 30,
+        marginLeft: 20,
         marginTop: 10,
     },
     lineGraphTitle:{
@@ -552,8 +554,8 @@ const styles = StyleSheet.create({
     tableContainer: {
         flex: 1,
         padding: 16,
-        paddingTop: 30,
-        backgroundColor: "#fff",
+        // paddingTop: 30,
+        backgroundColor: "#1E1E1E",
         marginTop: 50,
     },
     tableHead: {
@@ -562,12 +564,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     dataWrapper:{
-        marginTop: -1
+        marginTop: -1,
+        backgroundColor: '#C6FF00',
     },
     row: {
         height: 50
     },
     tableTitle: {
+        color: 'white',
         fontWeight: "bold",
         fontSize: 18,
         textAlign: "center",
@@ -577,10 +581,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         borderWidth: 1,
         height: 70,
-        backgroundColor: "lightblue",
+        backgroundColor: "#C6FF00",
         marginTop: "auto",
     },
     headerBox: {
+        backgroundColor: '#C6FF00',
         justifyContent: "center",
         alignItems: "center",
         flex: 1,
@@ -590,6 +595,10 @@ const styles = StyleSheet.create({
         fontSize: 25,
     },
     msgRow: {
+        borderBottomColor: 'white',
+
+        // borderRadius: 10,
+        backgroundColor: 'black',
         flexDirection: "row",
         borderWidth: 1,
         height: 80,
@@ -605,6 +614,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
     },
     userName: {
+        color: 'white',
         alignSelf: "flex-start",
         fontSize: 15,
         fontWeight: "bold"
@@ -615,6 +625,7 @@ const styles = StyleSheet.create({
         marginTop: 5
     },
     time: {
+        color: 'white',
         alignSelf: "flex-end",
         marginRight: 20,
         paddingLeft: 30,
@@ -647,17 +658,17 @@ const styles = StyleSheet.create({
     },
     send: {
         alignSelf: "center",
-        borderWidth: 1,
-        backgroundColor: "#7FCDCD",
-        borderRadius: 10,
+        // borderWidth: 1,
+        // backgroundColor: "#C6FF00",
+        // borderRadius: 10,
         height: 30,
         width: 60,
         position: "absolute",
-        marginRight: 50
+        // marginRight: 30
     },
-    sendText: {
-        fontSize: 20
-    },
+    // sendText: {
+    //     fontSize: 20
+    // },
     center: {
         justifyContent: 'center',
         alignItems: 'center'
