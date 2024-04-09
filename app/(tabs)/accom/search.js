@@ -312,7 +312,7 @@ export default function search() {
                 ) : (
                     <View style={styles.searchResults}>
                         {listings &&
-                            listingDetailed.length === 2 &&
+                            listingDetailed.length === listings.length &&
                             listingDetailed.map((listing) => (
                                 <Pressable
                                     onPress={() =>
