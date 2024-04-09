@@ -130,7 +130,7 @@ export default function diagnosticsDash() {
         }
         let errors = {};
 
-        if (!name) errors.name = 'Your name is required';
+        if (!name) errors.name = "The admin's name is required";
         if (!problem) errors.problem = 'The problem is required';
 
         setErrors(errors);
@@ -435,7 +435,7 @@ export default function diagnosticsDash() {
                             style={styles.submitButton}
                             onPress={() => handleSubmit()}
                         >
-                            <Text style={styles.submitText}> Submit </Text>
+                            <Text style={styles.submitText}>Submit</Text>
                         </TouchableOpacity>
                     </View>
                 ) : null}
@@ -751,15 +751,20 @@ const styles = StyleSheet.create({
         alignSelf: 'center',
         borderWidth: 1,
         margin: 20,
-        backgroundColor: '#7FCDCD',
+        backgroundColor: '#C5FF00',
         borderRadius: 10,
         height: 45,
         width: 100,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     submitText: {
-        fontSize: 25,
-        marginLeft: 5,
-        marginTop: 5,
+        fontSize: 20,
+        textAlign: 'center',
+        alignSelf: 'center',
+        // marginLeft: 5,
+        // marginTop: 5,
+        color: 'black',
     },
     errorText: {
         color: 'red',
@@ -844,6 +849,7 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start',
         fontSize: 15,
         fontWeight: 'bold',
+        color: 'white',
     },
     msgPreview: {
         alignSelf: 'flex-start',

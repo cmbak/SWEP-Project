@@ -165,7 +165,10 @@ export default function viewAccom() {
                     onScroll={handleOnScroll}
                 />
                 <View>
-                    <TouchableOpacity style={[styles.shareBtn, styles.shadow]} onPress = {shareFunc}>
+                    <TouchableOpacity
+                        style={[styles.shareBtn, styles.shadow]}
+                        onPress={shareFunc}
+                    >
                         <FontAwesome size={30} name="share-alt" color="gray" />
                         <Text style={styles.shareTxt}>{i18n.t('share')}</Text>
                     </TouchableOpacity>
@@ -204,15 +207,16 @@ export default function viewAccom() {
 
     // For sharing a listing
     const shareFunc = async (id) => {
-                
-                try {
-                  await Share.share({
-                    message: "Hey there! 🏠 Found an amazing flat listing that might just be what you're looking for! Check it out here:\n\n" + response.data.data.url,
-                  });
-                } catch (error) {
-                  alert(error.message);
-                }
-            }
+        try {
+            await Share.share({
+                message:
+                    "Hey there! 🏠 Found an amazing flat listing that might just be what you're looking for! Check it out here:\n\n" +
+                    response.data.data.url,
+            });
+        } catch (error) {
+            alert(error.message);
+        }
+    };
 
     // Sets description state to orignalDesc or translatedDesc depending on current description
     function toggleDesc() {
@@ -301,7 +305,7 @@ export default function viewAccom() {
                                     color="white"
                                 />
                                 {/* TODO PLURAL TRANSLATION? */}
-                                <Text style={{color: 'white'}}>
+                                <Text style={{ color: 'white' }}>
                                     {' '}
                                     {accomData.baths} {i18n.t('bath')}
                                 </Text>
@@ -315,7 +319,7 @@ export default function viewAccom() {
                                     size={24}
                                     color="white"
                                 />
-                                <Text style={{color: 'white'}}>
+                                <Text style={{ color: 'white' }}>
                                     {' '}
                                     {accomData.beds} {i18n.t('bed')}
                                 </Text>
@@ -328,7 +332,7 @@ export default function viewAccom() {
                                     size={22}
                                     color="white"
                                 />
-                                <Text style={{color: 'white'}}>
+                                <Text style={{ color: 'white' }}>
                                     {' '}
                                     {accomData.livingRooms} {i18n.t('livRoom')}
                                 </Text>
@@ -543,7 +547,9 @@ export default function viewAccom() {
                         styles.container,
                     ]}
                 >
-                    <Text style={styles.loadingText}>{i18n.t('loadingAccom')}</Text>
+                    <Text style={styles.loadingText}>
+                        {i18n.t('loadingAccom')}
+                    </Text>
                 </View>
             )}
         </View>
@@ -553,10 +559,11 @@ export default function viewAccom() {
 const styles = StyleSheet.create({
     viewContainer: {
         backgroundColor: '#1E1E1E',
-         flexGrow:1,
+        flexGrow: 1,
     },
     container: {
         marginHorizontal: 20,
+        flexShrink: 1, // Wraps text
     },
     loadingContainer: {
         justifyContent: 'center',

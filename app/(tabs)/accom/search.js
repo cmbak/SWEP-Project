@@ -9,13 +9,13 @@ import {
     Pressable,
     Platform,
     Dimensions,
-    Alert
+    Alert,
 } from 'react-native';
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
 import { Ionicons } from '@expo/vector-icons';
 import { SearchBar } from 'react-native-elements';
-import { Svg , Path } from 'react-native-svg';
+import { Svg, Path } from 'react-native-svg';
 import { useEffect, useState } from 'react';
 import { key } from '../../../apiKey';
 import { Link, useRouter } from 'expo-router';
@@ -34,7 +34,7 @@ export default function search() {
     const [minBeds, setMinBeds] = useState('');
     const [isFilterVisible, setIsFilterVisible] = useState(false);
     const [progress, setProgress] = useState(0);
-    const [value, setValue] = React.useState("");
+    const [value, setValue] = React.useState('');
     // const router = useRouter();
 
     const handleInputChange = (text) => {
@@ -66,9 +66,9 @@ export default function search() {
         setIsFilterVisible(!isFilterVisible);
     };
 
-    const getListings = async () => { 
+    const getListings = async () => {
         setLoading(true);
-        setProgress(0)
+        setProgress(0);
 
         const params = {
             locationKey: SearchInput,
@@ -78,7 +78,7 @@ export default function search() {
             sort: 'recent',
             maxPrice: maxPrice,
         };
-        
+
         const headers = {
             'X-RapidAPI-Key': key,
             'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
@@ -102,21 +102,17 @@ export default function search() {
             if (response.data.data.length === 0) {
                 // Show alert if no listings found
                 Alert.alert(
-                    'No Listings Found', 
-                    'Please try another location or adjust your search criteria.', 
-                    [{text: 'OK', onPress: () => console.log('OK Pressed')}]
+                    'No Listings Found',
+                    'Please try another location or adjust your search criteria.',
+                    [{ text: 'OK', onPress: () => console.log('OK Pressed') }]
                 );
             }
-
         } catch (error) {
             console.error(error); // when presenting, comment out
             setLoading(false);
-            Alert.alert(
-                'Empty input', 
-                'Please enter a location', 
-                [{text: 'OK', onPress: () => console.log('OK Pressed')}]
-            );
-
+            Alert.alert('Empty input', 'Please enter a location', [
+                { text: 'OK', onPress: () => console.log('OK Pressed') },
+            ]);
         }
     };
 
@@ -163,18 +159,17 @@ export default function search() {
         <View style={styles.searchPageContainer}>
             <ScrollView contentContainerStyle={styles.container}>
                 <View style={styles.searchGroup}>
-
                     {/* FDM logo */}
                     <View style={styles.fdmLogo}>
-                        <Svg 
-                            xmlns="http://www.w3.org/2000/svg" 
-                            width="292" 
-                            height="93" 
-                            viewBox="0 0 292 93" 
+                        <Svg
+                            xmlns="http://www.w3.org/2000/svg"
+                            width="292"
+                            height="93"
+                            viewBox="0 0 292 93"
                             fill="none"
                         >
-                            <Path 
-                                d="M141.691 29.1292H70.6869V92.5729H141.691C151.537 92.5729 159.528 84.5745 159.528 74.7185V46.9836C159.528 37.1276 151.546 29.1292 141.691 29.1292ZM133.183 78.015C133.183 82.5664 129.496 86.2562 124.949 86.2562H97.024V35.446H124.949C129.496 35.446 133.183 39.1357 133.183 43.6871V78.015ZM8.23301 29.1292H59.7206V35.446H27.708C26.9474 35.446 26.3372 36.0568 26.3372 36.818V56.5882H59.7206V62.9049H26.3456V92.5646H0V37.3704C0 32.8189 3.68604 29.1292 8.23301 29.1292ZM264.693 12.4295C273.377 9.19169 282.563 5.2176 292 0.415176V92.5729H265.663V23.8834L245.118 61.7922V92.5646H218.772V35.9648L198.227 73.8736V92.5729H171.882V37.3618C171.882 32.9025 175.426 29.2631 179.881 29.1292C186.049 28.9452 192.168 28.4348 198.227 27.8324V60.6211L217.41 25.2304C226.42 23.6826 235.74 21.5658 245.118 18.8802V48.548L264.702 12.4295H264.693Z" 
+                            <Path
+                                d="M141.691 29.1292H70.6869V92.5729H141.691C151.537 92.5729 159.528 84.5745 159.528 74.7185V46.9836C159.528 37.1276 151.546 29.1292 141.691 29.1292ZM133.183 78.015C133.183 82.5664 129.496 86.2562 124.949 86.2562H97.024V35.446H124.949C129.496 35.446 133.183 39.1357 133.183 43.6871V78.015ZM8.23301 29.1292H59.7206V35.446H27.708C26.9474 35.446 26.3372 36.0568 26.3372 36.818V56.5882H59.7206V62.9049H26.3456V92.5646H0V37.3704C0 32.8189 3.68604 29.1292 8.23301 29.1292ZM264.693 12.4295C273.377 9.19169 282.563 5.2176 292 0.415176V92.5729H265.663V23.8834L245.118 61.7922V92.5646H218.772V35.9648L198.227 73.8736V92.5729H171.882V37.3618C171.882 32.9025 175.426 29.2631 179.881 29.1292C186.049 28.9452 192.168 28.4348 198.227 27.8324V60.6211L217.41 25.2304C226.42 23.6826 235.74 21.5658 245.118 18.8802V48.548L264.702 12.4295H264.693Z"
                                 fill="#C5FF00"
                             />
                         </Svg>
@@ -185,21 +180,25 @@ export default function search() {
                         placeholder="Search properties"
                         value={SearchInput}
                         cancelButtonTitle
-                        showCancel='true'
+                        showCancel="true"
                         containerStyle={styles.searchBarContainer}
                         inputContainerStyle={styles.inputContainerStyle}
                         onChangeText={handleInputChange}
                     />
 
                     {/* Search Button */}
-                    <TouchableOpacity style={styles.searchButton} onPress={handleSubmit}>
-                        <Text style={styles.searchButtonText}>
-                            Search
-                        </Text>
+                    <TouchableOpacity
+                        style={styles.searchButton}
+                        onPress={handleSubmit}
+                    >
+                        <Text style={styles.searchButtonText}>Search</Text>
                     </TouchableOpacity>
 
                     {/* Filter Button */}
-                    <TouchableOpacity style={styles.filterButton} onPress={() => setIsFilterVisible(true)}>
+                    <TouchableOpacity
+                        style={styles.filterButton}
+                        onPress={() => setIsFilterVisible(true)}
+                    >
                         <Ionicons name="filter-sharp" size={24} color="white" />
                     </TouchableOpacity>
 
@@ -212,9 +211,15 @@ export default function search() {
                     >
                         <View style={styles.modalContainer}>
                             <View style={styles.modalContent}>
-
-                                <TouchableOpacity style={styles.filterCloseButton} onPress={() => setIsFilterVisible(false)}>
-                                    <Ionicons name="close" size={24} color="black" />
+                                <TouchableOpacity
+                                    style={styles.filterCloseButton}
+                                    onPress={() => setIsFilterVisible(false)}
+                                >
+                                    <Ionicons
+                                        name="close"
+                                        size={24}
+                                        color="black"
+                                    />
                                 </TouchableOpacity>
 
                                 {/* Minimum Price Slider */}
@@ -227,9 +232,9 @@ export default function search() {
                                     value={minPrice}
                                     onValueChange={setMinPrice}
                                 />
-     
+
                                 {/* Maximum Price Slider */}
-                                <Text>Max Price: {maxPrice}</Text>  
+                                <Text>Max Price: {maxPrice}</Text>
                                 <Slider
                                     style={{ width: '100%', marginVertical: 5 }}
                                     minimumValue={0}
@@ -239,11 +244,11 @@ export default function search() {
                                     onValueChange={setMaxPrice}
                                 />
 
-                                {/* Minimum Beds */} 
+                                {/* Minimum Beds */}
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Minimum beds"
-                                    placeholderTextColor='gray'
+                                    placeholderTextColor="gray"
                                     value={minBeds}
                                     onChangeText={handleMinBedsChange}
                                     keyboardType="numeric"
@@ -253,7 +258,7 @@ export default function search() {
                                 <TextInput
                                     style={styles.input}
                                     placeholder="Maximum beds"
-                                    placeholderTextColor='gray'
+                                    placeholderTextColor="gray"
                                     value={maxBeds}
                                     onChangeText={handleMaxBedsChange}
                                     keyboardType="numeric"
@@ -264,7 +269,7 @@ export default function search() {
                                     <TouchableOpacity
                                         style={styles.clearFilterButton}
                                         onPress={handleClear}
-                                        >
+                                    >
                                         <Text style={styles.clearFilterText}>
                                             Clear Filters
                                         </Text>
@@ -274,46 +279,45 @@ export default function search() {
                                     <TouchableOpacity
                                         style={styles.applyFilterButton}
                                         onPress={toggleFilters}
-                                        >
+                                    >
                                         <Text style={styles.applyFilterText}>
                                             Apply Filters
                                         </Text>
                                     </TouchableOpacity>
-                                </View>     
+                                </View>
                             </View>
                         </View>
                     </Modal>
                 </View>
-
-
-
 
                 {Loading ? (
                     <View style={styles.progressContainer}>
                         <Progress.Bar
                             progress={progress}
                             width={Dimensions.get('screen').width - 50}
-                            height={30} 
+                            height={30}
                             borderRadius={20}
-                            color = 'rgba(198,255,0,255)'
-                            unfilledColor = 'white'
+                            color="rgba(198,255,0,255)"
+                            unfilledColor="white"
                             style={styles.progress}
                         />
-                        <Text style={{
-                            marginTop: 10, 
-                            color: 'white', 
-                            fontWeight: 'bold', 
-                            fontSize: 16,
-                            textAlign: 'center'
-                        }}>
+                        <Text
+                            style={{
+                                marginTop: 10,
+                                color: 'white',
+                                fontWeight: 'bold',
+                                fontSize: 16,
+                                textAlign: 'center',
+                            }}
+                        >
                             Loading...
-                        </Text> 
+                        </Text>
                     </View>
                 ) : (
                     <View style={styles.searchResults}>
                         {listings &&
                             listingDetailed.length === listings.length &&
-                            listingDetailed.map((listing) => (
+                            listingDetailed.map((listing, index) => (
                                 <Pressable
                                     onPress={() =>
                                         router.push({
@@ -324,13 +328,21 @@ export default function search() {
                                             },
                                         })
                                     }
+                                    key={index}
                                 >
-                                    <View style={[styles.propertyOverview, styles.shadow]} key={listing.id}>
+                                    <View
+                                        style={[
+                                            styles.propertyOverview,
+                                            styles.shadow,
+                                        ]}
+                                        key={listing.id}
+                                    >
                                         {/* Property Image */}
-                                        <Image style={styles.propertyImage}
+                                        <Image
+                                            style={styles.propertyImage}
                                             source={{ uri: listing.images[0] }}
                                         />
-                                        
+
                                         {/* Property Details */}
                                         <View style={styles.propertyText}>
                                             {/* Property Name */}
@@ -338,14 +350,28 @@ export default function search() {
                                                 {listing.name}
                                             </Text>
                                             {/* Property Address */}
-                                            <View style={styles.propertyAddressContainer}>
-                                                <Text style={styles.propertyAddress}>
+                                            <View
+                                                style={
+                                                    styles.propertyAddressContainer
+                                                }
+                                            >
+                                                <Text
+                                                    style={
+                                                        styles.propertyAddress
+                                                    }
+                                                >
                                                     {listing.address}
                                                 </Text>
                                             </View>
                                             {/* Property Price */}
-                                            <View style={styles.propertyPriceContainer}>
-                                                <Text style={styles.propertyPrice}>
+                                            <View
+                                                style={
+                                                    styles.propertyPriceContainer
+                                                }
+                                            >
+                                                <Text
+                                                    style={styles.propertyPrice}
+                                                >
                                                     {`£${listing.price}pcm`}
                                                 </Text>
                                             </View>
@@ -372,13 +398,11 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    
 
     // FDM logo
     fdmLogo: {
         marginBottom: 30,
     },
-
 
     // Search Bar
     searchGroup: {
@@ -398,7 +422,6 @@ const styles = {
         borderRadius: 20,
     },
 
-
     // Search Button
     searchButton: {
         borderRadius: 5,
@@ -406,22 +429,19 @@ const styles = {
         justifyContent: 'center',
         alignItems: 'center',
     },
-    searchButtonText : {
+    searchButtonText: {
         color: 'white',
         fontSize: 16,
         fontWeight: '700',
     },
 
-
     // Filter
-    filterButton: {
-
-    },
+    filterButton: {},
     input: {
         backgroundColor: '#cfcfcf',
         borderRadius: 10,
         padding: 10,
-        marginBottom: 10
+        marginBottom: 10,
     },
     modalContainer: {
         flex: 1,
@@ -429,7 +449,7 @@ const styles = {
         alignItems: 'center',
         backgroundColor: 'rgba(0, 0, 0, 0.5)',
     },
-    modalContent: { 
+    modalContent: {
         backgroundColor: 'white',
         padding: 20,
         borderRadius: 10,
@@ -446,13 +466,13 @@ const styles = {
         margin: 5,
         padding: 15,
         backgroundColor: 'black',
-        borderRadius: 15
+        borderRadius: 15,
     },
     applyFilterButton: {
         margin: 5,
         padding: 15,
         backgroundColor: 'black',
-        borderRadius: 15
+        borderRadius: 15,
     },
     applyFilterText: {
         color: 'white',
@@ -472,14 +492,13 @@ const styles = {
         // marginTop: 10,
     },
 
-
     // Listing
     propertyOverview: {
         marginBottom: 30,
         backgroundColor: '#e6e6e6',
         paddingBottom: 10,
         borderRadius: 20,
-        marginHorizontal: 40
+        marginHorizontal: 40,
     },
     propertyImage: {
         justifyContent: 'center',
@@ -487,19 +506,19 @@ const styles = {
         width: Dimensions.get('screen').width - 40,
         height: 250,
         borderTopLeftRadius: 20,
-        borderTopRightRadius: 20
+        borderTopRightRadius: 20,
     },
     propertyText: {
         textAlign: 'center',
         paddingHorizontal: 10,
         marginTop: 7,
         justifyContent: 'center',
-        alignItems: 'center'
+        alignItems: 'center',
     },
     propertyName: {
         marginTop: 5,
         fontSize: 25,
-        fontWeight: 'bold'
+        fontWeight: 'bold',
     },
     propertyAddress: {
         fontSize: 15,
@@ -508,7 +527,7 @@ const styles = {
     },
     propertyPrice: {
         fontSize: 20,
-        fontWeight:'600',
+        fontWeight: '600',
     },
     propertyPriceContainer: {
         marginTop: 10,
@@ -518,7 +537,6 @@ const styles = {
         marginBottom: 5,
     },
 
-
     // Loading bar
     loadingText: {
         textAlign: 'center',
@@ -527,7 +545,6 @@ const styles = {
     progress: {
         borderColor: 'none',
     },
-
 
     // Shadow
     shadow: {
