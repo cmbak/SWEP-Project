@@ -9,9 +9,9 @@
     "web": "expo start --web"
   },
   "dependencies": {
-    "@react-native-community/slider": "^4.5.0",
+    "@react-native-community/slider": "4.4.2",
     "axios": "^1.6.8",
-    "expo": "^50.0.14",
+    "expo": "^50.0.15",
     "expo-constants": "~15.4.5",
     "expo-linking": "~6.2.2",
     "expo-localization": "~14.8.3",
@@ -20,7 +20,7 @@
     "google-translate-api-x": "^10.6.8",
     "i18n-js": "^4.4.3",
     "react": "18.2.0",
-    "react-native": "^0.73.5",
+    "react-native": "0.73.6",
     "react-native-chart-kit": "^6.12.0",
     "react-native-elements": "^3.4.3",
     "react-native-progress": "^5.0.1",
