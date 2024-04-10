@@ -10,6 +10,7 @@ import {
     Platform,
     Dimensions,
     Alert,
+    ImageBackground,
 } from 'react-native';
 import * as React from 'react';
 import * as Progress from 'react-native-progress';
@@ -83,6 +84,7 @@ export default function search() {
     const getListings = async () => {
         setLoading(true);
         setProgress(0);
+        console.log(`In getListings(), SearchInput is ${SearchInput}`);
 
         const params = {
             locationKey: SearchInput,
@@ -138,6 +140,9 @@ export default function search() {
                         'X-RapidAPI-Key': key,
                         'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
                     };
+                    if (listingDetailed.length > 0) {
+                        setListingDetailed([]);
+                    }
                     for (let i = 0; i < 1; i++) {
                         const propertyID = listings[i].id;
                         console.log(propertyID);
@@ -155,6 +160,8 @@ export default function search() {
                         // console.log(listingDetailed);
                     }
                     console.log(listingDetailed, 'outside loop');
+                    console.log(listingDetailed.length);
+                    console.log(listings.length);
                 } catch (error) {
                     console.error(error); // when presenting, comment out
                 } finally {
@@ -330,7 +337,8 @@ export default function search() {
                 ) : (
                     <View style={styles.searchResults}>
                         {listings &&
-                            listingDetailed.length === 1 &&
+                            listingDetailed &&
+                            // listingDetailed.length === 1 &&
                             listingDetailed.map((listing, index) => (
                                 <Pressable
                                     onPress={() =>
@@ -352,10 +360,21 @@ export default function search() {
                                         key={listing.id}
                                     >
                                         {/* Property Image */}
-                                        <Image
+                                        <ImageBackground
                                             style={styles.propertyImage}
                                             source={{ uri: listing.images[0] }}
-                                        />
+                                        >
+                                            <View>
+                                                {listing.images.length === 0 ? (
+                                                    <Text
+                                                        style={styles.noImgTxt}
+                                                    >
+                                                        No images available for
+                                                        this property
+                                                    </Text>
+                                                ) : null}
+                                            </View>
+                                        </ImageBackground>
 
                                         {/* Property Details */}
                                         <View style={styles.propertyText}>
@@ -574,5 +593,9 @@ const styles = {
                 shadowColor: 'black',
             },
         }),
+    },
+    noImgTxt: {
+        textAlign: 'center',
+        fontSize: 15,
     },
 };

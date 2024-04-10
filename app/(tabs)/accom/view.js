@@ -255,7 +255,6 @@ export default function viewAccom() {
     // Toggle features list to original or translated version
     function toggleFeatures() {
         if (translatedFeatures.length === 0) {
-            console.log('FEATURES HAVENT BEEN TRANSLATED SO NO TOGGLE!');
             return;
         }
         if (features === originalFeatures) {
@@ -376,6 +375,24 @@ export default function viewAccom() {
                                         accomData.availableFrom
                                     )}`}
                                 </Text>
+                                {accomData.images.length === 0 ? (
+                                    <TouchableOpacity
+                                        style={[
+                                            styles.noImagesShareBtn,
+                                            styles.shadow,
+                                        ]}
+                                        onPress={shareFunc}
+                                    >
+                                        <FontAwesome
+                                            size={30}
+                                            name="share-alt"
+                                            color="gray"
+                                        />
+                                        <Text style={styles.shareTxt}>
+                                            {i18n.t('share')}
+                                        </Text>
+                                    </TouchableOpacity>
+                                ) : null}
                             </View>
                             <View
                                 style={[styles.priceContainer, styles.shadow]}
@@ -833,6 +850,19 @@ const styles = StyleSheet.create({
         alignSelf: 'flex-start', // Makes width fit text content? hopefully
         bottom: 280,
         left: 290,
+        flexDirection: 'row',
+        gap: 7,
+    },
+    noImagesShareBtn: {
+        // No absolute pos
+        alignItems: 'center',
+        justifyContent: 'center',
+        borderRadius: 8,
+        paddingVertical: 3,
+        paddingHorizontal: 5,
+        backgroundColor: 'white',
+        // width: 90,
+        alignSelf: 'flex-start', // Makes width fit text content? hopefully
         flexDirection: 'row',
         gap: 7,
     },
