@@ -269,7 +269,6 @@ export default function diagnosticsDash() {
                                 onPress={() => showGraph()}
                                 style={styles.graphImage}
                             >
-                                {/* <Image source={require("../../assets/graph-icon.png")} style={styles.graphImage} /> */}
                                 <Entypo
                                     name="bar-graph"
                                     size={120}
@@ -284,7 +283,6 @@ export default function diagnosticsDash() {
                                 onPress={() => showDevForm()}
                                 style={styles.reportImage}
                             >
-                                {/* <Image source={require("../../assets/report-symbol.png")} style={styles.reportImage} /> */}
                                 <Entypo
                                     name="new-message"
                                     size={120}
@@ -297,13 +295,6 @@ export default function diagnosticsDash() {
                         </View>
                     ) : null}
 
-                    {/* {displayImageDesc1 ? (
-                        <View style={styles.descContainer}>
-                            <Text style={[styles.imageDesc, styles.issuesText]}>Issues reported</Text>
-                            <Text style={[styles.imageDesc, styles.contactText]}>Contact developer</Text>
-                        </View>
-                    ) : null} */}
-
                     {/* The second row with the unsolved problems image and the chat image*/}
                     {displayDashboardRow2 ? (
                         <View style={[styles.dashboardContainer, styles.row2]}>
@@ -311,7 +302,6 @@ export default function diagnosticsDash() {
                                 onPress={() => showProblemTable()}
                                 style={styles.problemImage}
                             >
-                                {/* <Image source={require("../../assets/problem.png")} style={styles.problemImage} /> */}
                                 <MaterialIcons
                                     name="report-problem"
                                     size={130}
@@ -326,7 +316,6 @@ export default function diagnosticsDash() {
                                 onPress={() => showUserChat()}
                                 style={styles.chatImage}
                             >
-                                {/* <Image source={require("../../assets/chat.png")} style={styles.chatImage}/> */}
                                 <MaterialIcons
                                     name="message"
                                     size={130}
@@ -339,12 +328,6 @@ export default function diagnosticsDash() {
                         </View>
                     ) : null}
 
-                    {/* {displayImageDesc2 ? (
-                        <View style={styles.descContainer}>
-                            <Text style={[styles.imageDesc, styles.problemsText]}>Unsolved problems</Text>
-                            <Text style={[styles.imageDesc, styles.usersText]}>Chat with users</Text>
-                        </View>
-                    ) : null} */}
                 </View>
 
                 {displayGraph ? (
@@ -699,9 +682,6 @@ const styles = StyleSheet.create({
     dashboardContainer: {
         flexDirection: 'row',
         gap: 60,
-        // marginTop: 20,
-        // marginBottom: 20,
-        // marginRight: 30,
     },
     row1: {
         marginTop: 40,
@@ -709,30 +689,15 @@ const styles = StyleSheet.create({
     },
     reportImage: {
         alignItems: 'center',
-        // height: 140,
-        // width: 130,
-        // marginLeft: 75,
-        // marginTop: 10,
     },
     graphImage: {
         alignItems: 'center',
-        // marginLeft: 30,
-        // marginTop: 15,
     },
     problemImage: {
-        // backgroundColor: 'white'
         alignItems: 'center',
-        // marginTop: 40,
-        // marginLeft: 35,
-        // height: 125,
-        // width: 125,
     },
     chatImage: {
         alignItems: 'center',
-        // height: 125,
-        // width: 125,
-        // marginLeft: 72,
-        // marginTop: 45
     },
     descContainer: {
         flexDirection: 'row',
@@ -741,7 +706,6 @@ const styles = StyleSheet.create({
         marginTop: 30,
         fontWeight: 'bold',
         fontSize: 15,
-        // color: "#113f67"
         color: 'white',
         textAlign: 'center',
     },
@@ -772,8 +736,6 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         alignSelf: 'center',
-        // marginLeft: 5,
-        // marginTop: 5,
         color: 'black',
     },
     errorText: {
@@ -803,7 +765,6 @@ const styles = StyleSheet.create({
     tableContainer: {
         flex: 1,
         padding: 16,
-        // paddingTop: 30,
         backgroundColor: '#1E1E1E',
         marginTop: 50,
     },
@@ -845,8 +806,6 @@ const styles = StyleSheet.create({
     },
     msgRow: {
         borderBottomColor: 'white',
-
-        // borderRadius: 10,
         backgroundColor: 'black',
         flexDirection: 'row',
         borderWidth: 1,
@@ -908,17 +867,10 @@ const styles = StyleSheet.create({
     },
     send: {
         alignSelf: 'center',
-        // borderWidth: 1,
-        // backgroundColor: "#C6FF00",
-        // borderRadius: 10,
         height: 30,
         width: 60,
         position: 'absolute',
-        // marginRight: 30
     },
-    // sendText: {
-    //     fontSize: 20
-    // },
     center: {
         justifyContent: 'center',
         alignItems: 'center',
