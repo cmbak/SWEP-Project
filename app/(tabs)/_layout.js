@@ -28,6 +28,7 @@ export default function TabLayout() {
                     tabBarIcon: ({ color }) => (
                         <FontAwesome size={28} name="home" color={color} />
                     ),
+                    href: null, // No longer displays - throws error if index.js is deleted
                 }}
             />
             <Tabs.Screen
