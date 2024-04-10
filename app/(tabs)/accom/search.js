@@ -141,9 +141,9 @@ export default function search() {
                         'X-RapidAPI-Host': 'zoopla4.p.rapidapi.com',
                     };
                     if (listingDetailed.length > 0) {
-                        setListingDetailed([]);
+                        setListingDetailed([]); // Have to clear previous search results
                     }
-                    for (let i = 0; i < 1; i++) {
+                    for (let i = 0; i < listings.length; i++) {
                         const propertyID = listings[i].id;
                         console.log(propertyID);
                         const response1 = await axios.get(
