@@ -13,6 +13,7 @@ import {
     Dimensions,
     Animated,
     Share,
+    Alert,
 } from 'react-native';
 import React, { useEffect, useState, useRef } from 'react';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
@@ -26,6 +27,8 @@ import { I18n } from 'i18n-js';
 import { translations } from '../../../localizations';
 import { RandomRatings } from '../../../randomRatings';
 import { useLocalSearchParams, router } from 'expo-router';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 /*
 Accommodation
 
@@ -61,6 +64,11 @@ export default function viewAccom() {
     const [originalFeatures, setOriginalFeatures] = useState(null);
     const [translatedFeatures, setTranslatedFeatures] = useState([]);
     const [features, setFeatures] = useState(null);
+    const [isAdmin, setIsAdmin] = useState(false);
+
+    const IP_ADDRESS = '192.168.0.13';
+    const SERVER_URL =
+        process.env.REACT_APP_SERVER_URL || `http://${IP_ADDRESS}:5000`;
 
     if (locale === 'en' || locale === 'de' || locale === 'fr') {
         i18n.locale = locale;
@@ -100,7 +108,19 @@ export default function viewAccom() {
         if (localParams.id !== undefined) {
             fetchData();
         }
+        getIsAdmin();
     }, []);
+
+    async function getIsAdmin() {
+        try {
+            const res = await AsyncStorage.getItem('@is_admin');
+            if (res === 'true') {
+                setIsAdmin(true);
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    }
 
     const { width, height } = Dimensions.get('screen');
 
@@ -335,6 +355,31 @@ export default function viewAccom() {
         console.log('Features after toggle');
         console.log(features);
     }
+
+    const removeAccommodation = async () => {
+        //run().catch(console.dir);
+        const id = accomData.id;
+        // post req?#
+        try {
+            // await fetch(`${SERVER_URL}/removedAc`)
+            const response = await fetch(`${SERVER_URL}/removeAccom`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id }),
+            });
+            Alert.alert('Removed', 'The accommodation has been removed.');
+            router.back({
+                params: {
+                    id: id,
+                },
+            });
+        } catch (error) {
+            Alert.alert('Error', 'Failed to remove the accommodation.');
+            console.log(error);
+        }
+    };
 
     // Want to toggle desc but only after translateDesc state has been updated and not before any translation has occurred
     useEffect(() => {
@@ -648,6 +693,16 @@ export default function viewAccom() {
                             </TouchableOpacity>
                         </View>
                     </View>
+                    {isAdmin === true ? (
+                        <View style={styles.bottomButtonContainer}>
+                            <Pressable
+                                title="Remove Accommodation"
+                                onPress={removeAccommodation}
+                            >
+                                <Text>Remove Accommodation</Text>
+                            </Pressable>
+                        </View>
+                    ) : null}
                 </ScrollView>
             ) : (
                 <View
