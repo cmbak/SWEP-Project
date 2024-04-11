@@ -468,6 +468,7 @@ export default function viewAccom() {
                         ) : null}
                         {accomData.beds ? (
                             <Text>
+                                {/* <FontAwesome5 name="bed" size={24} color="black" /> */}
                                 <FontAwesome
                                     name="bed"
                                     size={24}
@@ -727,7 +728,7 @@ const styles = StyleSheet.create({
     },
     container: {
         marginHorizontal: 20,
-        flexShrink: 1,
+        flexShrink: 1, // Wraps text
     },
     loadingContainer: {
         justifyContent: 'center',
@@ -774,16 +775,26 @@ const styles = StyleSheet.create({
     },
     headerImg: {
         height: 300,
+        // resizeMode: 'contain',
     },
     horizLine: {
+        // borderBottomColor: '#c7cacc',
+        // borderBottomColor: '#0E0D0D',
+        // borderBottomWidth: 1,
         marginBottom: 10,
         marginTop: 20,
+        // backgroundColor: 'green',
+        // fontSize: 30,
         paddingLeft: 20,
     },
     titleGroup: {
+        // flexDirection: 'row',
+        // justifyContent: 'space-between',
+        // paddingTop: 25,
         alignContent: 'center',
     },
     datePosted: {
+        // color: '#494949',
         color: 'white',
         alignSelf: 'center',
     },
@@ -801,12 +812,14 @@ const styles = StyleSheet.create({
     },
     ratingGroup: {
         flexDirection: 'row',
+        // gap: 10,
         marginBottom: 7,
     },
     rating: {
         flex: 1,
     },
     ratingText: {
+        // backgroundColor:'blue',
         alignSelf: 'center',
         justifyContent: 'center',
         fontSize: 35,
@@ -834,6 +847,8 @@ const styles = StyleSheet.create({
         textAlign: 'left',
     },
     profileCard: {
+        // borderColor: 'darkgray',
+        // borderWidth: 1,
         borderRadius: 13,
         backgroundColor: '#C6FF00',
         flexDirection: 'row',
@@ -850,6 +865,7 @@ const styles = StyleSheet.create({
         margin: 10,
     },
     profileContainer: {
+        // backgroundColor:'black',
         marginLeft: 20,
         gap: 2,
         flex: 1,
@@ -885,20 +901,23 @@ const styles = StyleSheet.create({
         paddingVertical: 3,
         paddingHorizontal: 5,
         backgroundColor: 'white',
-        alignSelf: 'flex-start',
+        // width: 90,
+        alignSelf: 'flex-start', // Makes width fit text content? hopefully
         bottom: 280,
         left: 290,
         flexDirection: 'row',
         gap: 7,
     },
     noImagesShareBtn: {
+        // No absolute pos
         alignItems: 'center',
         justifyContent: 'center',
         borderRadius: 8,
         paddingVertical: 3,
         paddingHorizontal: 5,
         backgroundColor: 'white',
-        alignSelf: 'flex-start',
+        // width: 90,
+        alignSelf: 'flex-start', // Makes width fit text content? hopefully
         flexDirection: 'row',
         gap: 7,
     },
@@ -928,6 +947,7 @@ const styles = StyleSheet.create({
     slides: {
         flex: 1,
         flexDirection: 'column',
+        // width: '100%',
     },
     dot: {
         width: 12,

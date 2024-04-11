@@ -77,6 +77,7 @@ export default function search() {
         setMaxPrice('5000');
         setMaxBeds('');
         setMinBeds('');
+        // setIsFilterVisible(!isFilterVisible);
     };
 
     const toggleFilters = () => {
@@ -126,7 +127,7 @@ export default function search() {
                 );
             }
         } catch (error) {
-            console.error(error); // when presenting, comment out for a more seamless view of alerts
+            console.error(error); // when presenting, comment out
             setLoading(false);
             Alert.alert('Empty input', 'Please enter a location', [
                 { text: 'OK', onPress: () => console.log('OK Pressed') },
@@ -178,7 +179,7 @@ export default function search() {
                     console.log(listingDetailed.length);
                     console.log(listings.length);
                 } catch (error) {
-                    console.error(error); // when presenting, comment out for a more seamless view of alerts
+                    console.error(error); // when presenting, comment out
                 } finally {
                     setLoading(false);
                 }
@@ -357,6 +358,7 @@ export default function search() {
                     <View style={styles.searchResults}>
                         {listings &&
                             listingDetailed &&
+                            // listingDetailed.length === 1 &&
                             listingDetailed.map((listing, index) => (
                                 <Pressable
                                     onPress={() =>

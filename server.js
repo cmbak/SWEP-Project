@@ -20,7 +20,16 @@ const UserSchema = new mongoose.Schema({
     isAdmin: Boolean,
 });
 
+const RemovedAccomSchema = new mongoose.Schema({
+    accom_id: Number,
+});
+
 const Users = mongoose.model('Users', UserSchema, 'Users');
+const RemovedAccom = mongoose.model(
+    'RemovedAccom',
+    RemovedAccomSchema,
+    'RemovedAccom'
+);
 
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
@@ -38,6 +47,35 @@ app.post('/login', async (req, res) => {
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.get('/removedAccoms', async (req, res) => {
+    try {
+        const removedAccoms = await RemovedAccom.find(
+            {},
+            { accom_id: 1, _id: 0 }
+        ); // Only gets the accom_id field
+        const accomIds = [];
+        removedAccoms.forEach((obj) => {
+            accomIds.push(obj['accom_id']);
+        });
+        res.status(200).json({ removedAccoms: accomIds });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Internal server error' });
+    }
+});
+
+app.post('/removeAccom', async (req, res) => {
+    const { id } = req.body;
+    try {
+        await RemovedAccom.insertMany({
+            accom_id: id,
+        });
+        res.status(200).json({ accomRemoved: id });
+    } catch (error) {
+        console.log(error);
     }
 });
 
