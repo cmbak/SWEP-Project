@@ -37,6 +37,9 @@ export default function search() {
     const [progress, setProgress] = useState(0);
     const [value, setValue] = React.useState('');
     // const router = useRouter();
+    const IP_ADDRESS = '192.168.0.13';
+    const SERVER_URL =
+        process.env.REACT_APP_SERVER_URL || `http://${IP_ADDRESS}:5000`;
 
     const handleInputChange = (text) => {
         setSearchInput(text);
@@ -143,9 +146,22 @@ export default function search() {
                     if (listingDetailed.length > 0) {
                         setListingDetailed([]); // Have to clear previous search results
                     }
+
+                    // Get all the ids from the db
+                    const response = await fetch(`${SERVER_URL}/removedAccoms`);
+                    let removedAccoms = await response.json();
+                    removedAccoms = removedAccoms.removedAccoms;
+                    console.log('Removed Accoms');
+                    console.log(removedAccoms);
+
                     for (let i = 0; i < listings.length; i++) {
                         const propertyID = listings[i].id;
                         console.log(propertyID);
+                        if (removedAccoms.includes(parseInt(propertyID))) {
+                            console.log('Getting removed');
+                            continue; // Want to skip
+                        }
+                        console.log('Accom not removed');
                         const response1 = await axios.get(
                             `https://zoopla4.p.rapidapi.com/properties/${propertyID}`,
                             { headers }
@@ -179,6 +195,10 @@ export default function search() {
     return (
         <View style={styles.searchPageContainer}>
             <ScrollView contentContainerStyle={styles.container}>
+                {/* Goes to login */}
+                <Pressable onPress={() => router.push('/')}>
+                    <Text>Logout</Text>
+                </Pressable>
                 <View style={styles.searchGroup}>
                     {/* FDM logo */}
                     <View style={styles.fdmLogo}>

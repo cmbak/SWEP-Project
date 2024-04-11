@@ -1,10 +1,21 @@
 ## How to run the project
 
-Clone this repo then run `npm install` to install all the dependencies
+1. Clone this repo then run `npm install` to install all the dependencies
 
-Then run `npx expo start`
+2. In:
 
-You can scan the qr code on your phone using the Expo Go app to test the app on your phone
+- `app/index.js`
+- `app/(tabs)/accom/search.js`
+- `app/(tabs)/accom/view.js`
+
+Change the value of the `IP_ADDRESS` variable to your **IPv4 address**
+
+
+3. In one terminal run `node server.js`
+
+4. And in another run `npx expo start`
+
+5. You can scan the qr code on your phone using the Expo Go app to test the app on your phone
 
 ## Useful links
 
