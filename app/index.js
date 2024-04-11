@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, Button, Pressable, Alert, StyleSheet } from 'react-native';
+import { View, Text, TextInput, Pressable, Alert, StyleSheet } from 'react-native';
 import { Svg, Path } from 'react-native-svg';
 import { router } from 'expo-router';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -53,7 +53,7 @@ export default function Login() {
         <View
             style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#1E1E1E', gap: 60}}
         >
-            <View style={styles.FDMlogo}>
+            <View>
                 <Svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="292"
@@ -117,9 +117,6 @@ export default function Login() {
 
 
 const styles = StyleSheet.create({
-    FDMlogo: {
-        // marginBottom: 
-    },
     loginDetailsContainer: {
         width: '80%',
         gap: 15
