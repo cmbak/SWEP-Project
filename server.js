@@ -26,6 +26,7 @@ app.post('/login', async (req, res) => {
     const { username, password } = req.body;
     try {
         const user = await Users.findOne({ username, password }).lean();
+        console.log(username, password);
         if (user) {
             res.status(200).json({
                 message: 'Login successful',

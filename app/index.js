@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function Login() {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
-    const IP_ADDRESS = '192.168.0.13';
+    const IP_ADDRESS = '192.168.0.8';
     const SERVER_URL =
         process.env.REACT_APP_SERVER_URL || `http://${IP_ADDRESS}:5000`;
 
