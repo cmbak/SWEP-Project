@@ -37,7 +37,7 @@ export default function search() {
     const [progress, setProgress] = useState(0);
     const [value, setValue] = React.useState('');
     // const router = useRouter();
-    const IP_ADDRESS = '192.168.0.13';
+    const IP_ADDRESS = '192.168.1.181';
     const SERVER_URL =
         process.env.REACT_APP_SERVER_URL || `http://${IP_ADDRESS}:5000`;
 
